@@ -1,0 +1,6 @@
+.data
+baby.db
+node_modules
+package-lock.json
+public/bundle*
+public/merged.json

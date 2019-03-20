@@ -1,0 +1,24 @@
+{
+  "name": "glow-baby-charts",
+  "repository": "https://github.com/daohoangson/d3js-glow-baby-charts",
+  "license": "GPL-3.0-only",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "rollup": "^1.5.0",
+    "rollup-plugin-commonjs": "^9.2.1",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-terser": "^4.0.4",
+    "serve": "^10.1.2",
+    "sql.js": "^0.5.0"
+  },
+  "dependencies": {
+    "d3": "^5.9.2",
+    "date-fns-timezone": "^0.1.4"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w",
+    "dev": "npm-run-all --parallel start watch",
+    "start": "serve -n public"
+  }
+}
