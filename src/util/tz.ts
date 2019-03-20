@@ -1,25 +1,38 @@
-import { utcFormat } from 'd3-time-format'
+import { utcFormat } from "d3-time-format";
 
-export default ({ tzOffset }) => {
-  const formatters = {}
-  const format = (ms: number, specifier: string): string => {
-    if (typeof formatters[specifier] === 'undefined') {
-      formatters[specifier] = utcFormat(specifier)
+type Formatter = (date: Date) => string;
+
+interface Formatters {
+  [specifier: string]: Formatter;
+}
+
+interface TzOptions {
+  tzOffset: number;
+}
+
+export default (options: TzOptions) => {
+  const { tzOffset } = options;
+  const formatters: Formatters = {};
+  const format = (ms: number, specifier: string) => {
+    if (typeof formatters[specifier] === "undefined") {
+      formatters[specifier] = utcFormat(specifier);
     }
 
-    return formatters[specifier](new Date(ms - tzOffset))
-  }
+    const f = formatters[specifier];
 
-  const formatDate = (ms: number): string => format(ms, '%b %e')
+    return f(new Date(ms - tzOffset));
+  };
 
-  const formatDayOfMonth = (ms: number): string => format(ms, '%d')
+  const formatDate = (ms: number) => format(ms, "%b %e");
 
-  const formatTime = (ms: number): string => format(ms, '%b %e %H:%M')
+  const formatDayOfMonth = (ms: number) => format(ms, "%d");
+
+  const formatTime = (ms: number) => format(ms, "%b %e %H:%M");
 
   return {
     format,
     formatDate,
     formatDayOfMonth,
     formatTime
-  }
-}
+  };
+};

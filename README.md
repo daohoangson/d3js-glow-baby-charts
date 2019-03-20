@@ -49,4 +49,4 @@ npm i
 npm run dev
 ```
 
-Go to http://glow.local.hoangson.vn:5000/ to view charts.
+Go to http://localhost:5000/ to view charts.
