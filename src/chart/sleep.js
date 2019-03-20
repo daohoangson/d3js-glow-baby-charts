@@ -3,9 +3,9 @@ import { extent, max } from 'd3-array'
 import { scaleLinear } from 'd3-scale'
 import { event, select } from 'd3-selection'
 import 'd3-transition'
-import { formatToTimeZone as tz } from 'date-fns-timezone'
 
 import { fetch } from '../util/data'
+import tz from '../util/tz'
 
 const AN_HOUR = 3600000
 const A_DAY = 86400000
@@ -79,15 +79,15 @@ const _prepare = ([[info], sleep]) => {
 }
 
 const _render = ({ blockData, countData, info, sumData }) => {
-  const { birthday, timeZone, tzOffset } = info
-  const dayOfBirth = tz(birthday, 'D', { timeZone })
+  const { birthday, tzOffset } = info
+  const { formatDate: tzFormatDate, formatDayOfMonth, formatTime } = tz({ tzOffset })
+  const dayOfBirth = formatDayOfMonth(birthday)
 
   const __buildXTickValues = domain => {
     const values = []
 
     for (let value = domain[0]; value < domain[1]; value++) {
-      const label = __formatDate(value)
-      if (label.match(new RegExp(` ${dayOfBirth}$`))) {
+      if (formatDayOfMonth(value * A_DAY) === dayOfBirth) {
         values.push(value)
       }
     }
@@ -95,9 +95,7 @@ const _render = ({ blockData, countData, info, sumData }) => {
     return values
   }
 
-  const __formatDate = dateNumber => tz(dateNumber * A_DAY, 'MMM D', { timeZone })
-
-  const __formatTime = t => tz(t, 'MMM D HH:mm', { timeZone })
+  const __formatDate = dn => tzFormatDate(dn * A_DAY)
 
   const dateNumberDomain = extent(blockData, d => d.dateNumber)
   const hourOfDayDomain = extent(blockData, d => d.hourOfDay)
@@ -149,7 +147,7 @@ const _render = ({ blockData, countData, info, sumData }) => {
       .attr('y', d => _y(d.hourOfDay))
       .attr('width', blockSize - 1)
       .attr('height', d => blockSize * d.hours)
-      .on('mouseover', d => tooltipShow(`${__formatTime(d.r.t1)} - ${__formatTime(d.r.t2)}`))
+      .on('mouseover', d => tooltipShow(`${formatTime(d.r.t1)} - ${formatTime(d.r.t2)}`))
       .on('mouseout', () => tooltipHide())
   }
 
