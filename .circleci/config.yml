@@ -13,13 +13,14 @@ jobs:
           at: ~/repo
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+            - root-npm-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - root-npm-{{ .Branch }}
+            - root-npm-
       - run: npm ci
       - save_cache:
+          key: root-npm-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - /root/.npm
       - persist_to_workspace:
           root: .
           paths: .
