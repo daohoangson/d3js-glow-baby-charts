@@ -1,4 +1,6 @@
+.circleci
 .data
-baby.db
+.vscode
+*.db
 node_modules
 public/merged.json

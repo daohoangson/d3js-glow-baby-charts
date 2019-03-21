@@ -40,7 +40,7 @@ You can skip this step if you are comfortable with running arbitrary code on you
 npm i
 
 # generate merged.json
-./tool/generate-merged-json.js
+./tool/generate-merged-json.ts
 ```
 
 ## 3. Start server

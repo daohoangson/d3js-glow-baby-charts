@@ -4,6 +4,7 @@ export interface Info {
   babyId: number;
   birthday: number;
   firstName: string;
+  key: RowKey;
   timeZone: string;
   tzOffset: number;
 }

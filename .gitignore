@@ -1,5 +1,6 @@
 .data
-baby.db
+.vscode
+*.db
 node_modules
 public/bundle*
 public/merged.json

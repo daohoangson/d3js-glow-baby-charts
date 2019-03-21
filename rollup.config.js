@@ -9,7 +9,7 @@ import visualizer from "rollup-plugin-visualizer";
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
-  input: "src/main.ts",
+  input: "src/bundle.ts",
   output: {
     file: "public/bundle.js",
     format: "umd",

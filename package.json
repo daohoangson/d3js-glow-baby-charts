@@ -4,6 +4,8 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "@types/d3": "^5.7.1",
+    "@types/node": "^11.11.4",
+    "@types/sql.js": "0.0.29",
     "date-fns-timezone": "^0.1.4",
     "now": "^14.2.0",
     "npm-run-all": "^4.1.5",
@@ -17,6 +19,7 @@
     "serve": "^10.1.2",
     "sql.js": "^0.5.0",
     "timezone-support": "^1.8.1",
+    "ts-node": "^8.0.3",
     "tslib": "^1.9.3",
     "tslint": "^5.14.0",
     "typescript": "^3.3.4000"
@@ -27,7 +30,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "npm-run-all --parallel start watch",
-    "lint": "prettier --check --loglevel debug src/**/*.ts tool/*.js *.js",
+    "lint": "prettier --check --loglevel debug src/**/*.ts tool/*.ts *.js",
     "start": "serve -n public",
     "watch": "rollup -c -w"
   }
