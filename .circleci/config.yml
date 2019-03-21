@@ -1,20 +1,52 @@
+defaults: &defaults
+  docker:
+    - image: circleci/node:10.15.3
+  working_directory: ~/repo
+
 version: 2
 jobs:
-  build:
-    docker:
-    - image: circleci/node:10.15.3
-    working_directory: ~/repo
+  checkout:
+    <<: *defaults
     steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "package.json" }}
-        - v1-dependencies-
-    - run: npm ci
-    - save_cache:
-        paths:
-        - node_modules
-        key: v1-dependencies-{{ checksum "package.json" }}
-    - run: npm run build
-    - store_artifacts:
-        path: ./public
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run: npm ci
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: .
+          paths: .
+  build:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths: public
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run: ls -al ./public
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - checkout
+      - build:
+          requires:
+            - checkout
+      - deploy:
+          requires:
+            - build
