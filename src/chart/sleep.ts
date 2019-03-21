@@ -2,10 +2,10 @@ import { axisBottom, axisLeft } from "d3-axis";
 import { extent, max } from "d3-array";
 import { format as numberFormat } from "d3-format";
 import { scaleLinear } from "d3-scale";
-import { event, select, Selection, BaseType } from "d3-selection";
+import { event, select } from "d3-selection";
 import "d3-transition";
 
-import data, { Info, Row, Data } from "../util/data";
+import data, { Data, Info, Row } from "../util/data";
 import tz from "../util/tz";
 
 const AN_HOUR = 3600000;
@@ -67,13 +67,14 @@ const _prepare = (result: Data) => {
     const nextZeroAtTz = zeroAtTz + (zeroAtTz > r.t1 ? 0 : A_DAY);
 
     const newBlockData: BlockDatum[] = [];
-    if (r.t2 > nextZeroAtTz) {
+    const t2 = r.t2 || r.t1;
+    if (t2 > nextZeroAtTz) {
       // split into two pieces
       if (r.t1 < nextZeroAtTz)
         newBlockData.push(__buildBlockData(r.t1, nextZeroAtTz, r));
-      newBlockData.push(__buildBlockData(nextZeroAtTz, r.t2, r));
+      newBlockData.push(__buildBlockData(nextZeroAtTz, t2, r));
     } else {
-      newBlockData.push(__buildBlockData(r.t1, r.t2, r));
+      newBlockData.push(__buildBlockData(r.t1, t2, r));
     }
 
     newBlockData.forEach(d => {
@@ -131,8 +132,9 @@ const _render = (prepared: PreparedData) => {
 
   const __formatDate = (dn: number) => tzf(dn * A_DAY);
 
-  const dateNumberDomain = extent(blockData, (d: BlockDatum) => d.dateNumber);
-  const hourOfDayDomain = extent(blockData, (d: BlockDatum) => d.hourOfDay);
+  const [dnMin, dnMax] = extent(blockData, (d: BlockDatum) => d.dateNumber);
+  const dateNumberDomain = [dnMin || 0, dnMax || 0];
+  const hourOfDayDomain = [0, 23];
 
   const margin = { top: 20, right: 20, bottom: 70, left: 40 };
   const width = window.innerWidth - margin.left - margin.right;
@@ -156,7 +158,7 @@ const _render = (prepared: PreparedData) => {
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height})`)
       .call(
-        axisBottom(x)
+        axisBottom<number>(x)
           .tickFormat(
             (dn: number) =>
               `${Math.floor((dn - (birthday - tzOffset) / A_DAY) / 30)}mo`
@@ -207,11 +209,10 @@ const _render = (prepared: PreparedData) => {
       .attr("height", d => blockSize * d.hours)
       .on("mouseover", d => {
         const r = d.row;
-        const duration = (r.t2 - r.t1) / AN_HOUR;
+        const t2 = r.t2 || r.t1;
         tooltipShow(
-          `${formatTime(r.t1)} -> ${formatTime(
-            r.t2
-          )}<br />Duration: ${format2Decimal(duration)} hours`
+          `${formatTime(r.t1)} -> ${formatTime(t2)}<br />` +
+            `Duration: ${format2Decimal((t2 - r.t1) / AN_HOUR)} hours`
         );
       })
       .on("mouseout", () => tooltipHide());
@@ -222,7 +223,7 @@ const _render = (prepared: PreparedData) => {
 
     const _y = scaleLinear()
       .range([height, 0])
-      .domain([0, max(countData, d => d.count)]);
+      .domain([0, max(countData, d => d.count) || 0]);
     _counts
       .append("g")
       .attr("class", "y axis")
@@ -248,7 +249,7 @@ const _render = (prepared: PreparedData) => {
 
     const _y = scaleLinear()
       .range([height, 0])
-      .domain([0, max(sumData, d => d.sum)]);
+      .domain([0, max(sumData, d => d.sum) || 0]);
     _counts
       .append("g")
       .attr("class", "y axis")

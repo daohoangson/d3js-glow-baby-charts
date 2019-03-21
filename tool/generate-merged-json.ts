@@ -24,17 +24,16 @@ if (!existsSync(outputDir)) {
   process.exit(1);
 }
 
-let merged: Array<{}>;
 try {
   console.log(`Database path: ${dbPath}`);
-  merged = readDb(dbPath);
+  const merged = readDb(dbPath);
+
+  console.log(`Writing ${merged.length} rows into ${mergedPath}`);
+  writeFileSync(mergedPath, JSON.stringify(merged, null, 2));
+
+  console.log("OK");
 } catch (e) {
   console.error(e);
   console.log("Encountered error while reading database, quitting...")
   process.exit(1);
 }
-
-console.log(`Writing ${merged.length} rows into ${mergedPath}`);
-writeFileSync(mergedPath, JSON.stringify(merged, null, 2));
-
-console.log("OK");

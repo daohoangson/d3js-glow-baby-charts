@@ -3,19 +3,15 @@ import { readFileSync } from "fs";
 import { Database } from "sql.js";
 import { findTimeZone, getUTCOffset } from "timezone-support";
 
-import { Info } from "../data";
-
-type DatabaseRow = { [columnName: string]: number | string | Uint8Array };
-
-type OutputRow = DatabaseRow | Info | { t1: number; t2: number };
+import { Info, Row, RowBabyFeedData, RowBabyLog } from "../data";
 
 interface TemporaryMap {
   [t1: string]: {
-    [t2: string]: OutputRow[];
+    [t2: string]: Array<Info | Row>;
   };
 }
 
-const _getStartTimestamp = (info: Info, row: DatabaseRow) => {
+const _getStartTimestamp = (info: Info, row: RowBabyFeedData | RowBabyLog) => {
   const { start_timestamp } = row;
   if (typeof start_timestamp === "number" && start_timestamp > 0)
     return start_timestamp * 1000;
@@ -35,15 +31,19 @@ const _getStartTimestamp = (info: Info, row: DatabaseRow) => {
   return date.getTime();
 };
 
-const _getEndTimestamp = (info: Info, row: DatabaseRow) => {
-  const { end_timestamp } = row;
+const _getEndTimestamp = (info: Info, row: RowBabyFeedData | RowBabyLog) => {
+  const { end_timestamp } = <RowBabyLog>row;
   if (typeof end_timestamp === "number" && end_timestamp > 0)
     return end_timestamp * 1000;
 
   return _getStartTimestamp(info, row);
 };
 
-const _processRow = (info: Info, row: DatabaseRow, tmp: TemporaryMap) => {
+const _processRow = (
+  info: Info,
+  row: RowBabyFeedData | RowBabyLog,
+  tmp: TemporaryMap
+) => {
   const t1 = _getStartTimestamp(info, row);
   if (typeof tmp[t1] === "undefined") tmp[t1] = {};
 
@@ -54,7 +54,7 @@ const _processRow = (info: Info, row: DatabaseRow, tmp: TemporaryMap) => {
 };
 
 export default (dbPath: string) => {
-  let babyInfo: Info = null;
+  let infoOrNull: Info | null = null;
 
   const filebuffer = readFileSync(dbPath);
   const db = new Database(filebuffer);
@@ -63,7 +63,7 @@ export default (dbPath: string) => {
   console.log("Reading table: baby...");
   const babyStmt = db.prepare("SELECT * FROM baby LIMIT 1");
   while (babyStmt.step()) {
-    if (babyInfo !== null)
+    if (infoOrNull !== null)
       throw new Error("Multiple babies are currently not supported");
 
     const babyRow = babyStmt.getAsObject();
@@ -80,7 +80,7 @@ export default (dbPath: string) => {
       throw new Error(`Could not parse birthday ${birthday}`);
     }
 
-    babyInfo = {
+    infoOrNull = {
       key: "info",
       babyId: parseInt(baby_id.toString()),
       birthday: birthdayDate.getTime(),
@@ -88,12 +88,13 @@ export default (dbPath: string) => {
       timeZone,
       tzOffset
     };
-    tmp[0][0].push(babyInfo);
+    tmp[0][0].push(infoOrNull);
 
-    console.log(`Hello ${babyInfo.firstName} (#${babyInfo.babyId}) 🎉`);
+    console.log(`Hello ${infoOrNull.firstName} (#${infoOrNull.babyId}) 🎉`);
   }
 
-  const { babyId } = babyInfo;
+  const info = <Info>infoOrNull;
+  const { babyId } = info;
   if (!babyId) throw new Error("No baby could be found in the database");
 
   console.log("Reading table: BabyFeedData...");
@@ -103,8 +104,9 @@ export default (dbPath: string) => {
   let feedCounter = 0;
   feedStmt.bind({ ":babyId": babyId });
   while (feedStmt.step()) {
-    const feedRow = feedStmt.getAsObject();
-    _processRow(babyInfo, { key: "feed", ...feedRow }, tmp);
+    // @ts-ignore
+    const feedRow: RowBabyFeedData = feedStmt.getAsObject();
+    _processRow(info, { key: "feed", ...feedRow }, tmp);
 
     if (feedCounter % 100 === 0) process.stdout.write(".");
     feedCounter++;
@@ -116,15 +118,16 @@ export default (dbPath: string) => {
   let logCounter = 0;
   logStmt.bind({ ":babyId": babyId });
   while (logStmt.step()) {
-    const logRow = logStmt.getAsObject();
-    _processRow(babyInfo, logRow, tmp);
+    // @ts-ignore
+    const logRow: RowBabyLog = logStmt.getAsObject();
+    _processRow(info, logRow, tmp);
 
     if (logCounter % 100 === 0) process.stdout.write(".");
     logCounter++;
   }
   process.stdout.write("\n");
 
-  const merged: OutputRow[] = [];
+  const merged: Array<Info | Row> = [];
   Object.keys(tmp)
     .map(v1 => parseInt(v1))
     .sort()

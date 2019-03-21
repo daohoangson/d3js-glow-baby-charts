@@ -9,12 +9,12 @@ export interface Info {
   tzOffset: number;
 }
 
-export interface Row extends RowBabyFeedData, RowBabyLog, Info {
+export type Row = (RowBabyFeedData | RowBabyLog) & {
   t1: number;
-  t2: number | null;
-}
+  t2: number | undefined;
+};
 
-interface RowBabyFeedData {
+export interface RowBabyFeedData {
   uuid: string;
   baby_id: number;
   action_user_id: number;
@@ -30,9 +30,10 @@ interface RowBabyFeedData {
   pump_right_volume_ml: number;
   pump_total_volume_ml: number;
   pump_duration_sec: number;
+  key: RowKey;
 }
 
-interface RowBabyLog {
+export interface RowBabyLog {
   uuid: string;
   baby_id: number;
   action_user_id: number;
@@ -70,18 +71,21 @@ export interface Data {
 }
 
 export default (options: DataOptions): Promise<Data> =>
-  json("merged.json").then((json: Row[]) => {
+  json<Row[]>("merged.json").then(json => {
     const { key } = options;
-    let info: Info = null;
+    let infoOrNull: Info | null = null;
     const rows: Row[] = [];
 
     json.forEach(row => {
       if (row.key === key) {
         rows.push(row);
       } else if (row.key === "info") {
-        info = row;
+        // @ts-ignore
+        infoOrNull = row;
       }
     });
 
-    return { info, rows };
+    if (infoOrNull === null) throw new Error("Baby info could not be found");
+
+    return { info: infoOrNull, rows };
   });
