@@ -1,0 +1,53 @@
+defaults: &defaults
+  docker:
+    - image: circleci/node:10.15.3
+  working_directory: ~/repo
+
+version: 2
+jobs:
+  checkout:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo
+      - restore_cache:
+          keys:
+            - root-npm-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - root-npm-{{ .Branch }}
+            - root-npm-
+      - run: npm ci
+      - save_cache:
+          key: root-npm-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - /root/.npm
+      - persist_to_workspace:
+          root: .
+          paths: .
+  build:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths: public
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run: ./tool/now.sh
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - checkout
+      - build:
+          requires:
+            - checkout
+      - deploy:
+          requires:
+            - build

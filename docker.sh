@@ -3,6 +3,7 @@
 set -e
 
 exec docker run --rm -it \
+  -e ZEIT_TOKEN \
   -p 5000:5000 \
   -v "$PWD:/app" -w /app \
   -v "$PWD/.data/root/.npm:/root/.npm" \
