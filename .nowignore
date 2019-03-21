@@ -1,0 +1,4 @@
+.data
+baby.db
+node_modules
+public/merged.json

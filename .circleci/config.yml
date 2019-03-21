@@ -37,7 +37,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/repo
-      - run: ls -al ./public
+      - run: ./tool/now.sh
 
 workflows:
   version: 2
