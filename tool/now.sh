@@ -4,4 +4,9 @@ set -e
 
 tar -czf public.tar.gz public/*.html public/bundle.js
 
-exec npx now --name glow-baby-charts --token $ZEIT_TOKEN
+_name='glow-baby-charts'
+if [ ! -z "${CIRCLE_BRANCH}" ]; then
+  _name="${_name}-${CIRCLE_BRANCH}"
+fi
+
+exec npx now --name $_name --token $ZEIT_TOKEN
