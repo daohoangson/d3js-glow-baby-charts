@@ -3,4 +3,5 @@ baby.db
 node_modules
 public/bundle*
 public/merged.json
+public.tar.gz
 stats.html

@@ -1,4 +1,4 @@
 {
   "version": 2,
-  "builds": [{ "src": "public/*", "use": "@now/static" }]
+  "builds": [{ "src": "public.tar.gz", "use": "@now/static" }]
 }
