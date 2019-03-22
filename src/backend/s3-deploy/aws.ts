@@ -1,7 +1,7 @@
 import { S3 } from "aws-sdk";
-import { choose as generateRandomName } from "moniker";
 
 import { Info, Row } from "../../util/data";
+import moniker from "../../util/moniker";
 import { contentType, map as filesMap } from "./files";
 
 const accessKeyId = process.env["S3_DEPLOY_ACCESS_KEY_ID"];
@@ -20,7 +20,7 @@ const url =
 export function uploadToS3(merged: Array<Info | Row>) {
   const s3 = new S3({ accessKeyId, secretAccessKey, region });
   const timestamp = Math.floor(new Date().getTime() / 1000);
-  const deployId = `${generateRandomName()}-${timestamp}`;
+  const deployId = `${moniker()}-${timestamp}`;
 
   const __putObject = (fileName: string, Body: Buffer | string) =>
     new Promise<void>((ok, err) => {
