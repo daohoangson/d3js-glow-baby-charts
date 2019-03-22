@@ -24,6 +24,12 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: .
+  lint:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run: npm run lint
   build:
     <<: *defaults
     steps:
@@ -43,12 +49,15 @@ jobs:
 
 workflows:
   version: 2
-  build-and-deploy:
+  deploy:
     jobs:
       - checkout
-      - build:
+      - lint:
           requires:
             - checkout
+      - build:
+          requires:
+            - lint
       - deploy:
           requires:
             - build

@@ -35,6 +35,6 @@ try {
   console.log("OK");
 } catch (e) {
   console.error(e);
-  console.log("Encountered error while reading database, quitting...")
+  console.log("Encountered error while reading database, quitting...");
   process.exit(1);
 }

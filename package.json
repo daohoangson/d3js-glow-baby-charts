@@ -31,7 +31,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "npm-run-all --parallel start watch",
-    "lint": "prettier --check --loglevel debug src/**/*.ts tool/*.ts *.js",
+    "lint": "prettier --check public/*.html src/**/*.ts tool/*.ts *.js *.json",
     "start": "serve -n public",
     "watch": "rollup -c -w"
   }
