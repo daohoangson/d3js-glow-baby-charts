@@ -4,7 +4,10 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "@types/d3": "^5.7.1",
+    "@types/muicss": "^0.9.1",
     "@types/node": "^11.11.4",
+    "@types/react": "^16.8.8",
+    "@types/react-dom": "^16.8.3",
     "@types/sql.js": "0.0.29",
     "aws-sdk": "^2.425.0",
     "busboy": "^0.3.0",
@@ -14,6 +17,7 @@
     "rollup": "^1.5.0",
     "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-replace": "^2.1.1",
     "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-typescript": "^1.0.0",
     "rollup-plugin-visualizer": "^1.1.0",
@@ -26,7 +30,10 @@
     "typescript": "^3.3.4000"
   },
   "dependencies": {
-    "d3": "^5.9.2"
+    "d3": "^5.9.2",
+    "muicss": "^0.9.41",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   },
   "scripts": {
     "build": "rollup -c",

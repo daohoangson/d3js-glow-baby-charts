@@ -6,4 +6,3 @@
 node_modules
 public/bundle*
 public/merged.json
-stats.html

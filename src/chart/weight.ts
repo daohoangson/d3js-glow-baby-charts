@@ -1,11 +1,4 @@
-import { axisBottom, axisLeft } from "d3-axis";
-import { extent, max } from "d3-array";
-import { scaleLinear, scaleTime } from "d3-scale";
-import { event, select } from "d3-selection";
-import { line } from "d3-shape";
-import { timeMonth } from "d3-time";
-import { timeFormat } from "d3-time-format";
-import "d3-transition";
+import * as d3 from "d3";
 
 import data, { Data, Info, RowBabyLog } from "../util/data";
 import tz from "../util/tz";
@@ -30,7 +23,7 @@ const _prepare = (data: Data) => {
   return { info, weightData };
 };
 
-const _render = (data: PreparedData) => {
+const _render = (selector: string, data: PreparedData) => {
   const { info, weightData } = data;
   const { tzOffset } = info;
   const { formatDate } = tz({ tzOffset });
@@ -39,21 +32,25 @@ const _render = (data: PreparedData) => {
   const width = 600 - margin.left - margin.right;
   const height = 300 - margin.top - margin.bottom;
 
-  const tooltip = select("body")
+  const tooltip = d3
+    .select(selector)
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-  const [xMin, xMax] = extent(weightData, d => d.date);
-  const x = scaleTime()
+  const [xMin, xMax] = d3.extent(weightData, d => d.date);
+  const x = d3
+    .scaleTime()
     .range([0, width])
     .domain([xMin || 0, xMax || 0]);
 
-  const y = scaleLinear()
+  const y = d3
+    .scaleLinear()
     .range([height, 0])
-    .domain([0, max(weightData, d => d.kg) || 0]);
+    .domain([0, d3.max(weightData, d => d.kg) || 0]);
 
-  const svg = select("body")
+  const svg = d3
+    .select(selector)
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -65,15 +62,16 @@ const _render = (data: PreparedData) => {
     .attr("class", "x axis")
     .attr("transform", `translate(0, ${height})`)
     .call(
-      axisBottom<Date>(x)
-        .tickFormat(timeFormat("%b %y"))
-        .ticks(timeMonth)
+      d3
+        .axisBottom<Date>(x)
+        .tickFormat(d3.timeFormat("%b %y"))
+        .ticks(d3.timeMonth)
     );
 
   svg
     .append("g")
     .attr("class", "y axis")
-    .call(axisLeft(y));
+    .call(d3.axisLeft(y));
 
   svg
     .append("path")
@@ -81,7 +79,8 @@ const _render = (data: PreparedData) => {
     .attr("class", "line")
     .attr(
       "d",
-      line<WeightDatum>()
+      d3
+        .line<WeightDatum>()
         .x(d => x(d.date))
         .y(d => y(d.kg))
     );
@@ -102,8 +101,8 @@ const _render = (data: PreparedData) => {
 
       tooltip
         .html(`${formatDate(d.date)}<br/>${d.kg.toFixed(1)}kg`)
-        .style("left", event.pageX + "px")
-        .style("top", event.pageY - 28 + "px");
+        .style("left", d3.event.pageX + "px")
+        .style("top", d3.event.pageY - 28 + "px");
     })
     .on("mouseout", () => {
       tooltip
@@ -113,7 +112,7 @@ const _render = (data: PreparedData) => {
     });
 };
 
-export default () =>
+export default (element: Element) =>
   data({ key: "weight" })
     .then(_prepare)
-    .then(_render);
+    .then(data => _render(<string>(<unknown>element), data));
