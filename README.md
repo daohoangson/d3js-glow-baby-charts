@@ -1,8 +1,12 @@
-Glow Baby Charts
+# Glow Baby Charts
 
-# Usage
+## Usage
 
-## 1. Export baby.db file
+1. Go to https://glow-baby-charts-master.daohoangson.now.sh/s3-deploy.html
+1. Upload your `baby.db` file (see below for details)
+1. Enjoy
+
+### How to get the database file
 
 Use any Android file explorer to get the file at `/data/data/com.glow.android.baby/databases/baby.db`.
 Your device must be rooted for this to work.
@@ -23,9 +27,13 @@ exit
 
 # in computer shell
 adb pull /sdcard/baby.db baby.db
+
+# done, the file is in your current directory
 ```
 
-## 2a. Start node Docker container (optional)
+## Development
+
+### 1. Start node Docker container (optional)
 
 You can skip this step if you are comfortable with running arbitrary code on your computer.
 
@@ -33,7 +41,7 @@ You can skip this step if you are comfortable with running arbitrary code on you
 ./docker.sh
 ```
 
-## 2b. Prepare environment
+### 2. Prepare environment
 
 ```bash
 # install dependencies from lock file
@@ -43,7 +51,7 @@ npm i
 ./tool/generate-merged-json.ts
 ```
 
-## 3. Start server
+### 3. Start server
 
 ```bash
 npm run dev
