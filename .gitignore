@@ -1,7 +1,9 @@
+/index.ts
 .data
-baby.db
+.env
+.vscode
+*.db
 node_modules
 public/bundle*
 public/merged.json
-public.tar.gz
 stats.html

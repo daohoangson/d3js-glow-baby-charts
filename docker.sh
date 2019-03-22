@@ -2,9 +2,14 @@
 
 set -e
 
-exec docker run --rm -it \
-  -e ZEIT_TOKEN \
+_name=glow-baby-charts
+
+docker build tool -t $_name
+
+exec docker run --rm -it --name $_name \
+  --env-file .env \
+  -p 3000:3000 \
   -p 5000:5000 \
-  -v "$PWD:/app" -w /app \
-  -v "$PWD/.data/root/.npm:/root/.npm" \
-  node:10.15.3-alpine sh
+  -v "${PWD}:/app" -w /app \
+  -v "${PWD}/.data/root/.npm:/root/.npm" \
+  $_name sh

@@ -38,6 +38,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/repo
+      - run: sudo npm i -g --unsafe-perm now
       - run: ./tool/now.sh
 
 workflows:

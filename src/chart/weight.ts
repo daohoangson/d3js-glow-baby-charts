@@ -7,7 +7,7 @@ import { timeMonth } from "d3-time";
 import { timeFormat } from "d3-time-format";
 import "d3-transition";
 
-import data, { FetchResult, Info } from "../util/data";
+import data, { Data, Info, RowBabyLog } from "../util/data";
 import tz from "../util/tz";
 
 interface WeightDatum {
@@ -20,11 +20,11 @@ interface PreparedData {
   weightData: WeightDatum[];
 }
 
-const _prepare = (data: FetchResult) => {
+const _prepare = (data: Data) => {
   const { info, rows } = data;
 
   const weightData = rows.map(
-    (r): WeightDatum => ({ date: r.t1, kg: r.val_float })
+    (r): WeightDatum => ({ date: r.t1, kg: (<RowBabyLog>r).val_float })
   );
 
   return { info, weightData };
@@ -44,13 +44,14 @@ const _render = (data: PreparedData) => {
     .attr("class", "tooltip")
     .style("opacity", 0);
 
+  const [xMin, xMax] = extent(weightData, d => d.date);
   const x = scaleTime()
     .range([0, width])
-    .domain(extent(weightData, d => d.date));
+    .domain([xMin || 0, xMax || 0]);
 
   const y = scaleLinear()
     .range([height, 0])
-    .domain([0, max(weightData, d => d.kg)]);
+    .domain([0, max(weightData, d => d.kg) || 0]);
 
   const svg = select("body")
     .append("svg")
@@ -64,7 +65,7 @@ const _render = (data: PreparedData) => {
     .attr("class", "x axis")
     .attr("transform", `translate(0, ${height})`)
     .call(
-      axisBottom(x)
+      axisBottom<Date>(x)
         .tickFormat(timeFormat("%b %y"))
         .ticks(timeMonth)
     );
