@@ -1,6 +1,6 @@
 #!/usr/local/bin/npx ts-node
 
-import { existsSync, writeFileSync } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join, normalize } from "path";
 
 import readDb from "../src/util/sqlite/read";
@@ -26,7 +26,8 @@ if (!existsSync(outputDir)) {
 
 try {
   console.log(`Database path: ${dbPath}`);
-  const merged = readDb(dbPath);
+  const data = readFileSync(dbPath);
+  const merged = readDb(data);
 
   console.log(`Writing ${merged.length} rows into ${mergedPath}`);
   writeFileSync(mergedPath, JSON.stringify(merged, null, 2));

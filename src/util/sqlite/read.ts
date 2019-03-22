@@ -53,11 +53,10 @@ const _processRow = (
   tmp[t1][t2].push({ t1, t2, ...row });
 };
 
-export default (dbPath: string) => {
+export default (data: Buffer) => {
   let infoOrNull: Info | null = null;
 
-  const filebuffer = readFileSync(dbPath);
-  const db = new Database(filebuffer);
+  const db = new Database(data);
   const tmp: TemporaryMap = { 0: { 0: [] } };
 
   console.log("Reading table: baby...");

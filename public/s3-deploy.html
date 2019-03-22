@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>s3-deploy</title>
+    <style>
+      ul {
+        list-style-type: none;
+      }
+      li {
+        margin: 30px 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <form action="/api/s3-deploy" method="POST" enctype="multipart/form-data">
+      <ul>
+        <li>
+          <label>
+            baby.db
+            <input type="file" name="db" />
+          </label>
+        </li>
+
+        <li><button type="submit">Upload</button></li>
+      </ul>
+    </form>
+</html>
