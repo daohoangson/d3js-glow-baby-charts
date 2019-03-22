@@ -2,7 +2,7 @@
 
 ## Usage
 
-1. Go to https://glow-baby-charts-master.daohoangson.now.sh/s3-deploy.html
+1. Go to https://glow-baby-charts-master.daohoangson.now.sh/
 1. Upload your `baby.db` file (see below for details)
 1. Enjoy
 
