@@ -7,4 +7,4 @@ if [ ! -z "${CIRCLE_BRANCH}" ]; then
   _name="${_name}-${CIRCLE_BRANCH}"
 fi
 
-exec now --name $_name --token $ZEIT_TOKEN "$@"
+exec now --local-config now-prod.json --name $_name --token $ZEIT_TOKEN "$@"

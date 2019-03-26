@@ -11,5 +11,6 @@ exec docker run --rm -it --name $_name \
   -p 3000:3000 \
   -p 5000:5000 \
   -v "${PWD}:/app" -w /app \
+  -v "${PWD}/.data/root/.cache:/root/.cache" \
   -v "${PWD}/.data/root/.npm:/root/.npm" \
   $_name sh
