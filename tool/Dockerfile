@@ -6,8 +6,9 @@ RUN wget -O /usr/local/bin/now 'https://latest-now-cli.now.sh/download/17678/now
 
 FROM node:10.15.3-alpine
 
-RUN npm i -g --unsafe-perm now
+RUN apk add --no-cache --update \
+  curl
 
-RUN npm i -g micro-ts-dev
+RUN npm i -g --unsafe-perm now
 
 COPY --from=now-cli-downloader /usr/local/bin/now /usr/local/bin/now-alpine
