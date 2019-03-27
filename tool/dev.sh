@@ -2,8 +2,7 @@
 
 set -e
 
-cat now-prod.json \
-  | sed '/@glow-baby-charts/d' \
+./tool/now.json.ts \
   | tee now.json
 
-exec now-alpine --debug --token xxx dev
+exec now-linux --debug --token xxx dev

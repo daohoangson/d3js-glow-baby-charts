@@ -13,4 +13,4 @@ exec docker run --rm -it --name $_name \
   -v "${PWD}:/app" -w /app \
   -v "${PWD}/.data/root/.cache:/root/.cache" \
   -v "${PWD}/.data/root/.npm:/root/.npm" \
-  $_name sh
+  $_name bash
