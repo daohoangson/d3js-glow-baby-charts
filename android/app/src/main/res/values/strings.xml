@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Glow Baby Charts</string>
-    <string name="db_file_size_x">File size: %d bytes</string>
+    <string name="db_file_size_x" tools:ignore="PluralsCandidate">File size: %d bytes</string>
     <string name="open_verb">Open in browser</string>
     <string name="share_verb">Share URL</string>
     <string name="upload_verb">Upload</string>
