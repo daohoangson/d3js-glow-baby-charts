@@ -1,4 +1,4 @@
-import { utcFormat } from "d3-time-format";
+import { utcFormat } from "d3";
 
 type Formatter = (date: Date) => string;
 

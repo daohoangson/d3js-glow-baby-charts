@@ -24,18 +24,6 @@ const files: File[] = [
       join(__dirname, "..", "..", "..", "public", "index.html")
     ),
     fileName: "index.html"
-  },
-  {
-    buffer: readFileSync(
-      join(__dirname, "..", "..", "..", "public", "sleep.html")
-    ),
-    fileName: "sleep.html"
-  },
-  {
-    buffer: readFileSync(
-      join(__dirname, "..", "..", "..", "public", "weight.html")
-    ),
-    fileName: "weight.html"
   }
 ];
 

@@ -1,16 +1,11 @@
-import { axisBottom, axisLeft } from "d3-axis";
-import { extent, max } from "d3-array";
-import { format as numberFormat } from "d3-format";
-import { scaleLinear } from "d3-scale";
-import { event, select } from "d3-selection";
-import "d3-transition";
+import * as d3 from "d3";
 
 import data, { Data, Info, Row } from "../util/data";
 import tz from "../util/tz";
 
 const AN_HOUR = 3600000;
 const A_DAY = 86400000;
-const format2Decimal = numberFormat(".2f");
+const format2Decimal = d3.format(".2f");
 
 interface BlockDatum {
   dateNumber: number;
@@ -40,6 +35,14 @@ interface PreparedData {
 
 interface NumberNumberHashMap {
   [key: string]: number;
+}
+
+interface RenderOptions {
+  canvasWidth?: number;
+
+  renderBlocks?: boolean;
+  renderCounts?: boolean;
+  renderSums?: boolean;
 }
 
 const _prepare = (result: Data) => {
@@ -112,7 +115,11 @@ const _prepare = (result: Data) => {
   return { blockData, countData, info, sumData };
 };
 
-const _render = (prepared: PreparedData) => {
+const _render = (
+  selector: string,
+  prepared: PreparedData,
+  options: RenderOptions
+) => {
   const { blockData, countData, info, sumData } = prepared;
   const { birthday, tzOffset } = info;
   const { formatDate: tzf, formatDayOfMonth, formatTime } = tz({ tzOffset });
@@ -132,21 +139,24 @@ const _render = (prepared: PreparedData) => {
 
   const __formatDate = (dn: number) => tzf(dn * A_DAY);
 
-  const [dnMin, dnMax] = extent(blockData, (d: BlockDatum) => d.dateNumber);
+  const [dnMin, dnMax] = d3.extent(blockData, (d: BlockDatum) => d.dateNumber);
   const dateNumberDomain = [dnMin || 0, dnMax || 0];
   const hourOfDayDomain = [0, 23];
 
   const margin = { top: 20, right: 20, bottom: 70, left: 40 };
-  const width = window.innerWidth - margin.left - margin.right;
+  const canvasWidth = options.canvasWidth || window.innerWidth;
+  const width = canvasWidth - margin.left - margin.right;
   const blockSize = width / (dateNumberDomain[1] - dateNumberDomain[0]);
   const height = blockSize * (hourOfDayDomain[1] - hourOfDayDomain[0]);
 
-  const x = scaleLinear()
+  const x = d3
+    .scaleLinear()
     .range([0, width])
     .domain(dateNumberDomain);
   const xValue = (d: BlockDatum | CountDatum | SumDatum) => x(d.dateNumber);
   const newChart = () => {
-    const svg = select("body")
+    const svg = d3
+      .select(selector)
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -158,7 +168,8 @@ const _render = (prepared: PreparedData) => {
       .attr("class", "x axis")
       .attr("transform", `translate(0, ${height})`)
       .call(
-        axisBottom<number>(x)
+        d3
+          .axisBottom<number>(x)
           .tickFormat(
             (dn: number) =>
               `${Math.floor((dn - (birthday - tzOffset) / A_DAY) / 30)}mo`
@@ -169,7 +180,8 @@ const _render = (prepared: PreparedData) => {
     return svg;
   };
 
-  const tooltip = select("body")
+  const tooltip = d3
+    .select(selector)
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
@@ -179,8 +191,8 @@ const _render = (prepared: PreparedData) => {
       .transition()
       .duration(200)
       .style("opacity", 0.9)
-      .style("left", event.pageX + "px")
-      .style("top", event.pageY - 28 + "px");
+      .style("left", d3.event.pageX + "px")
+      .style("top", d3.event.pageY - 28 + "px");
   const tooltipHide = () =>
     tooltip
       .transition()
@@ -190,13 +202,14 @@ const _render = (prepared: PreparedData) => {
   const __renderBlocks = () => {
     const _blocks = newChart();
 
-    const _y = scaleLinear()
+    const _y = d3
+      .scaleLinear()
       .range([0, height])
       .domain(hourOfDayDomain);
     _blocks
       .append("g")
       .attr("class", "y axis")
-      .call(axisLeft(_y));
+      .call(d3.axisLeft(_y));
 
     _blocks
       .selectAll("block")
@@ -221,13 +234,14 @@ const _render = (prepared: PreparedData) => {
   const __renderCounts = () => {
     const _counts = newChart();
 
-    const _y = scaleLinear()
+    const _y = d3
+      .scaleLinear()
       .range([height, 0])
-      .domain([0, max(countData, d => d.count) || 0]);
+      .domain([0, d3.max(countData, d => d.count) || 0]);
     _counts
       .append("g")
       .attr("class", "y axis")
-      .call(axisLeft(_y));
+      .call(d3.axisLeft(_y));
 
     _counts
       .selectAll("bar")
@@ -247,13 +261,14 @@ const _render = (prepared: PreparedData) => {
   const __renderSums = () => {
     const _counts = newChart();
 
-    const _y = scaleLinear()
+    const _y = d3
+      .scaleLinear()
       .range([height, 0])
-      .domain([0, max(sumData, d => d.sum) || 0]);
+      .domain([0, d3.max(sumData, d => d.sum) || 0]);
     _counts
       .append("g")
       .attr("class", "y axis")
-      .call(axisLeft(_y));
+      .call(d3.axisLeft(_y));
 
     _counts
       .selectAll("bar")
@@ -272,12 +287,24 @@ const _render = (prepared: PreparedData) => {
       .attr("height", d => height - _y(d.sum));
   };
 
-  __renderBlocks();
-  __renderCounts();
-  __renderSums();
+  const { renderBlocks, renderCounts, renderSums } = options;
+  if (!renderBlocks && !renderCounts && !renderSums) {
+    __renderBlocks();
+    __renderCounts();
+    __renderSums();
+  } else {
+    if (renderBlocks) __renderBlocks();
+    if (renderCounts) __renderCounts();
+    if (renderSums) __renderSums();
+  }
 };
 
-export default () =>
+export default (element: Element, options?: RenderOptions) =>
   data({ key: "sleep" })
     .then(_prepare)
-    .then(_render);
+    .then(data =>
+      _render(<string>(<unknown>element), data, {
+        canvasWidth: element.clientWidth,
+        ...options
+      })
+    );
