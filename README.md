@@ -33,11 +33,14 @@ adb pull /sdcard/baby.db baby.db
 
 ## Development
 
-### 1. Start node Docker container (optional)
-
-You can skip this step if you are comfortable with running arbitrary code on your computer.
+### 1. Start node Docker container
 
 ```bash
+cp .env.template .env
+
+# update env vars with appropriate values
+vi .env
+
 ./docker.sh
 ```
 
@@ -54,7 +57,11 @@ npm i
 ### 3. Start server
 
 ```bash
+# use now dev for full develoment cycle (front-end + back-end)
+# will be accessible at http://localhost:3000/
+./tool/dev.sh
+
+# or use rollup for front-end only
+# will be accessible at http://localhost:5000/
 npm run dev
 ```
-
-Go to http://localhost:5000/ to view charts.

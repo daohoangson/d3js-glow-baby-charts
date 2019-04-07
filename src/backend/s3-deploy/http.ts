@@ -1,10 +1,6 @@
+import * as Busboy from "busboy";
 import { IncomingMessage } from "http";
 import { Readable } from "stream";
-
-// TODO: find the correct way to use Busboy
-// `import Busboy from "busboy"` only works in micro-ts-dev
-// `import * as Busboy from "busboy"` only works on now.sh
-const Busboy = require("busboy");
 
 import readDb from "../../util/sqlite/read";
 import { Info, Row } from "../../util/data";

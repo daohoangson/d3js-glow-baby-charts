@@ -5,12 +5,12 @@
     { "src": "src/backend/*/index.ts", "use": "@now/node" }
   ],
   "env": {
-    "IS_NOW": "true",
     "S3_DEPLOY_ACCESS_KEY_ID": "@glow-baby-charts-s3-access-key-id",
     "S3_DEPLOY_BUCKET": "@glow-baby-charts-s3-bucket",
     "S3_DEPLOY_REGION": "@glow-baby-charts-s3-region",
     "S3_DEPLOY_SECRET_ACCESS_KEY": "@glow-baby-charts-s3-secret-access-key",
-    "S3_DEPLOY_URL": "@glow-baby-charts-s3-url"
+    "S3_DEPLOY_URL": "@glow-baby-charts-s3-url",
+    "IS_NOW": "true"
   },
   "routes": [
     { "src": "/api/(.*)", "dest": "/src/backend/$1" },

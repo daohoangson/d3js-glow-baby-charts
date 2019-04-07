@@ -1,5 +1,3 @@
-FROM node:10.15.3-alpine
+FROM node:8.15.1-stretch-slim
 
-RUN npm i -g --unsafe-perm now
-
-RUN npm i -g micro-ts-dev
+RUN npm i -g --unsafe-perm now@^15.0.2
