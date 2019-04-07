@@ -2,20 +2,66 @@
 <html>
   <head lang="en">
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>glow-baby-charts</title>
+
+    <script
+      crossorigin
+      integrity="sha384-XD+1rYmffiaW5cgETs9Lx0vr1F84pN51RxCX1y7VzVcxmLTwpOQqOdj8yx8xe1S/"
+      src="//unpkg.com/d3@5.9.2/dist/d3.min.js"
+    ></script>
+    <script
+      crossorigin
+      integrity="sha384-Rlv9E9ZsblTAvBVLLJn8RADR598Xsh7MPmd5VVh+vSw+wmF4KuUQNIU/IRoP/x5r"
+      src="//unpkg.com/react@16.8.4/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      integrity="sha384-Ftv9NrOOiiwOX/eL4/WiXAM8sEyHsmQiqYM3b2xFH9cdVwqddnEqUgY+Unfiko9s"
+      src="//unpkg.com/react-dom@16.8.4/umd/react-dom.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      integrity="sha384-prNNuT8PHZSh6q8uMsqCHWwYVLBu2uD9YvxSbXTRbeDJm1RK1FGObDQ0VyGT5SAJ"
+      src="//unpkg.com/muicss@0.9.41/dist/react/mui-react.min.js"
+    ></script>
+
+    <link
+      crossorigin
+      href="//use.fontawesome.com/releases/v5.8.1/css/all.css"
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+      rel="stylesheet"
+    />
+    <link
+      crossorigin
+      href="//cdn.muicss.com/mui-0.9.41/css/mui.min.css"
+      integrity="sha384-HQCF/NvkZj1qWUuOsZzhaRzd0YUpgW8qfzrxGVQAjfHmIoIm7U1EsuFSamP2+u1p"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <style>
+      .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 2px;
+      }
+
+      .tooltip {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid black;
+        color: white;
+        font-size: small;
+        position: absolute;
+        padding: 2px;
+        pointer-events: none;
+        white-space: nowrap;
+      }
+    </style>
   </head>
 
   <body>
-    <ul>
-      <li><a href="sleep.html">Sleep charts</a></li>
-      <li><a href="weight.html">Weight chart</a></li>
-      <li>
-        Tools:
-        <ul>
-          <li><a href="s3-deploy.html">AWS S3 Deployment</a></li>
-        </ul>
-      </li>
-    </ul>
+    <div id="root"></div>
+    <script src="bundle.js"></script>
   </body>
 </html>

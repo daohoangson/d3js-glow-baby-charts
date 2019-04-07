@@ -9,18 +9,27 @@ import visualizer from "rollup-plugin-visualizer";
 const production = !process.env.ROLLUP_WATCH;
 
 export default {
-  input: "src/bundle.ts",
+  input: "src/index.tsx",
   output: {
     file: "public/bundle.js",
     format: "umd",
+    globals: {
+      d3: "d3",
+      "muicss/react": "mui.react",
+      react: "React",
+      "react-dom": "ReactDOM"
+    },
     name: "GlowBabyCharts",
     sourcemap: !production
   },
+  external: ["d3", "muicss/react", "react", "react-dom"],
   plugins: [
     resolve(),
     commonjs(),
     production && terser(),
     typescript(),
-    visualizer()
+    visualizer({
+      filename: `./.data/visualizer-${production ? "prod" : "dev"}.html`
+    })
   ]
 };
