@@ -2,7 +2,11 @@
 
 set -e
 
+npm i
+
+npm run build
+
 ./tool/now.json.ts \
   | tee now.json
 
-exec now-linux --debug --token xxx dev
+exec now --debug --token xxx dev
