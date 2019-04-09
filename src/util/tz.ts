@@ -29,10 +29,25 @@ export default (options: TzOptions) => {
 
   const formatTime = (ms: number) => format(ms, "%b %e %H:%M");
 
+  const parseYmd = (ymd: string) => {
+    const match = ymd.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (match === null) {
+      return undefined;
+    }
+
+    const y = match[1];
+    const m = match[2];
+    const d = match[3];
+    const date = new Date(`${y}-${m}-${d}T00:00:00Z`);
+
+    return date.getTime() + tzOffset;
+  };
+
   return {
     format,
     formatDate,
     formatDayOfMonth,
-    formatTime
+    formatTime,
+    parseYmd
   };
 };

@@ -1,9 +1,8 @@
 import { parseFromTimeZone } from "date-fns-timezone";
-import { readFileSync } from "fs";
 import { Database } from "sql.js";
 import { findTimeZone, getUTCOffset } from "timezone-support";
 
-import { Info, Row, RowBabyFeedData, RowBabyLog } from "../data";
+import { Gender, Info, Row, RowBabyFeedData, RowBabyLog } from "../data";
 
 interface TemporaryMap {
   [t1: string]: {
@@ -66,7 +65,7 @@ export default (data: Buffer) => {
       throw new Error("Multiple babies are currently not supported");
 
     const babyRow = babyStmt.getAsObject();
-    const { baby_id, birthday, birth_timezone, first_name } = babyRow;
+    const { baby_id, birthday, birth_timezone, first_name, gender } = babyRow;
 
     const timeZone = birth_timezone.toString();
     const tzObj = findTimeZone(timeZone);
@@ -84,6 +83,7 @@ export default (data: Buffer) => {
       babyId: parseInt(baby_id.toString()),
       birthday: birthdayDate.getTime(),
       firstName: first_name.toString(),
+      gender: <Gender>gender.toString(),
       timeZone,
       tzOffset
     };

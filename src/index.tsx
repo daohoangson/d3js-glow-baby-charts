@@ -3,32 +3,35 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import weight from "./chart/weight";
+import sleep from "./chart/sleep";
 import Chart from "./components/Chart";
-import SleepCharts from "./components/SleepCharts";
+import DataLoader from "./components/DataLoader";
+import Filter from "./components/Filter";
+import Info from "./components/Info";
 
 const App = (
-  <Container fluid={true}>
-    <Tabs justified={true}>
-      <Tab
-        label={
-          <span>
-            <i className="fas fa-weight" /> Weight
-          </span>
-        }
-      >
-        <Chart renderer={weight} />
-      </Tab>
-      <Tab
-        label={
-          <span>
-            <i className="fas fa-bed" /> Sleep
-          </span>
-        }
-      >
-        <SleepCharts />
-      </Tab>
-    </Tabs>
-  </Container>
+  <DataLoader>
+    {({ info, rows }) => (
+      <div>
+        <Appbar>
+          <Container fluid={true}>
+            <Info info={info} />
+          </Container>
+        </Appbar>
+        <Container>
+          <Filter info={info} rows={rows}>
+            {({ filtered }) => (
+              <div>
+                {filtered.length}
+                <Chart renderer={e => weight(e, info, filtered)} />
+                <Chart renderer={e => sleep(e, { info, rows: filtered })} />
+              </div>
+            )}
+          </Filter>
+        </Container>
+      </div>
+    )}
+  </DataLoader>
 );
 
 ReactDOM.render(App, document.getElementById("root"));

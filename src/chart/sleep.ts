@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-import data, { Data, Info, Row } from "../util/data";
+import { Info, Row } from "../util/data";
 import tz from "../util/tz";
 
 const AN_HOUR = 3600000;
@@ -38,6 +38,9 @@ interface NumberNumberHashMap {
 }
 
 interface RenderOptions {
+  info: Info;
+  rows: Row[];
+
   canvasWidth?: number;
 
   renderBlocks?: boolean;
@@ -45,8 +48,7 @@ interface RenderOptions {
   renderSums?: boolean;
 }
 
-const _prepare = (result: Data) => {
-  const { info, rows } = result;
+const _prepare = (info: Info, rows: Row[]) => {
   const { tzOffset } = info;
   const blockData: BlockDatum[] = [];
   const counts: NumberNumberHashMap = {};
@@ -66,6 +68,8 @@ const _prepare = (result: Data) => {
   };
 
   rows.forEach(r => {
+    if (r.key !== "sleep") return;
+
     const zeroAtTz = Math.ceil(r.t1 / A_DAY) * A_DAY + tzOffset;
     const nextZeroAtTz = zeroAtTz + (zeroAtTz > r.t1 ? 0 : A_DAY);
 
@@ -146,8 +150,9 @@ const _render = (
   const margin = { top: 20, right: 20, bottom: 70, left: 40 };
   const canvasWidth = options.canvasWidth || window.innerWidth;
   const width = canvasWidth - margin.left - margin.right;
-  const blockSize = width / (dateNumberDomain[1] - dateNumberDomain[0]);
-  const height = blockSize * (hourOfDayDomain[1] - hourOfDayDomain[0]);
+  const blockWidth = width / (dateNumberDomain[1] - dateNumberDomain[0]) - 1;
+  const height = 300 - margin.top - margin.bottom;
+  const blockHeight = height / 24;
 
   const x = d3
     .scaleLinear()
@@ -218,8 +223,8 @@ const _render = (
       .append("rect")
       .attr("x", xValue)
       .attr("y", d => _y(d.hourOfDay))
-      .attr("width", blockSize - 1)
-      .attr("height", d => blockSize * d.hours)
+      .attr("width", blockWidth)
+      .attr("height", d => blockHeight * d.hours)
       .on("mouseover", d => {
         const r = d.row;
         const t2 = r.t2 || r.t1;
@@ -250,7 +255,7 @@ const _render = (
       .append("rect")
       .attr("x", xValue)
       .attr("y", d => _y(d.count))
-      .attr("width", blockSize - 1)
+      .attr("width", blockWidth)
       .attr("height", d => height - _y(d.count))
       .on("mouseover", d =>
         tooltipShow(`${__formatDate(d.dateNumber)}<br />Sleeps: ${d.count}`)
@@ -277,7 +282,7 @@ const _render = (
       .append("rect")
       .attr("x", xValue)
       .attr("y", d => _y(d.sum))
-      .attr("width", blockSize - 1)
+      .attr("width", blockWidth)
       .attr("height", d => height - _y(d.sum))
       .on("mouseover", d =>
         tooltipShow(
@@ -299,12 +304,8 @@ const _render = (
   }
 };
 
-export default (element: Element, options?: RenderOptions) =>
-  data({ key: "sleep" })
-    .then(_prepare)
-    .then(data =>
-      _render(<string>(<unknown>element), data, {
-        canvasWidth: element.clientWidth,
-        ...options
-      })
-    );
+export default (element: Element, options: RenderOptions) =>
+  _render(<string>(<unknown>element), _prepare(options.info, options.rows), {
+    canvasWidth: element.clientWidth,
+    ...options
+  });

@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-import data, { Data, Info, RowBabyLog } from "../util/data";
+import { Info, Row, RowBabyLog } from "../util/data";
 import tz from "../util/tz";
 
 interface WeightDatum {
@@ -13,12 +13,13 @@ interface PreparedData {
   weightData: WeightDatum[];
 }
 
-const _prepare = (data: Data) => {
-  const { info, rows } = data;
+const _prepare = (info: Info, rows: Row[]) => {
+  const weightData: WeightDatum[] = [];
 
-  const weightData = rows.map(
-    (r): WeightDatum => ({ date: r.t1, kg: (<RowBabyLog>r).val_float })
-  );
+  rows.forEach(r => {
+    if (r.key !== "weight") return;
+    weightData.push({ date: r.t1, kg: (<RowBabyLog>r).val_float });
+  });
 
   return { info, weightData };
 };
@@ -112,7 +113,5 @@ const _render = (selector: string, data: PreparedData) => {
     });
 };
 
-export default (element: Element) =>
-  data({ key: "weight" })
-    .then(_prepare)
-    .then(data => _render(<string>(<unknown>element), data));
+export default (element: Element, info: Info, rows: Row[]) =>
+  _render(<string>(<unknown>element), _prepare(info, rows));

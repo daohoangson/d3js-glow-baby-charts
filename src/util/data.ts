@@ -1,9 +1,10 @@
-import { json } from "d3";
+export type Gender = "F" | "M";
 
 export interface Info {
   babyId: number;
   birthday: number;
   firstName: string;
+  gender: Gender;
   key: RowKey;
   timeZone: string;
   tzOffset: number;
@@ -51,7 +52,7 @@ export interface RowBabyLog {
   data_1: number;
 }
 
-type RowKey =
+export type RowKey =
   | "diaper"
   | "feed"
   | "headcirc"
@@ -60,32 +61,3 @@ type RowKey =
   | "note"
   | "sleep"
   | "weight";
-
-interface DataOptions {
-  key: RowKey;
-}
-
-export interface Data {
-  info: Info;
-  rows: Row[];
-}
-
-export default (options: DataOptions): Promise<Data> =>
-  json<Row[]>("merged.json").then(json => {
-    const { key } = options;
-    let infoOrNull: Info | null = null;
-    const rows: Row[] = [];
-
-    json.forEach(row => {
-      if (row.key === key) {
-        rows.push(row);
-      } else if (row.key === "info") {
-        // @ts-ignore
-        infoOrNull = row;
-      }
-    });
-
-    if (infoOrNull === null) throw new Error("Baby info could not be found");
-
-    return { info: infoOrNull, rows };
-  });

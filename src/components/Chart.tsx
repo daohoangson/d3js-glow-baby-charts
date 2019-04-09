@@ -26,6 +26,10 @@ export default class Chart extends React.Component<ChartProps> {
     const { current } = this.ref;
     if (!current) return;
 
+    while (current.firstChild) {
+      current.removeChild(current.firstChild);
+    }
+
     renderer(current);
   }
 }
