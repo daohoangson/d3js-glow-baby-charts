@@ -47,6 +47,25 @@ jobs:
       - run: sudo npm i -g --unsafe-perm now
       - run: ./tool/now.sh
 
+  android-lint:
+    docker:
+      - image: circleci/android:api-28
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "android/build.gradle" }}-{{ checksum "android/app/build.gradle" }}
+      - run: cd android && ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "android/build.gradle" }}-{{ checksum "android/app/build.gradle" }}
+      - run: cd android && ./gradlew lint test
+      - store_artifacts:
+          path: android/app/build/reports
+          destination: reports
+
 workflows:
   version: 2
   deploy:
@@ -61,3 +80,6 @@ workflows:
       - deploy:
           requires:
             - build
+  android:
+    jobs:
+      - android-lint
