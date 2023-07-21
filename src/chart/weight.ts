@@ -13,6 +13,13 @@ interface PreparedData {
   weightData: WeightDatum[];
 }
 
+interface RenderOptions {
+  info: Info;
+  rows: Row[];
+
+  canvasWidth?: number;
+}
+
 const _prepare = (info: Info, rows: Row[]) => {
   const weightData: WeightDatum[] = [];
 
@@ -24,13 +31,18 @@ const _prepare = (info: Info, rows: Row[]) => {
   return { info, weightData };
 };
 
-const _render = (selector: string, data: PreparedData) => {
-  const { info, weightData } = data;
+const _render = (
+  selector: string,
+  prepared: PreparedData,
+  options: RenderOptions
+) => {
+  const { info, weightData } = prepared;
   const { tzOffset } = info;
   const { formatDate } = tz({ tzOffset });
 
   const margin = { top: 20, right: 20, bottom: 70, left: 40 };
-  const width = 600 - margin.left - margin.right;
+  const canvasWidth = options.canvasWidth || window.innerWidth;
+  const width = canvasWidth - margin.left - margin.right;
   const height = 300 - margin.top - margin.bottom;
 
   const tooltip = d3
@@ -113,5 +125,8 @@ const _render = (selector: string, data: PreparedData) => {
     });
 };
 
-export default (element: Element, info: Info, rows: Row[]) =>
-  _render(<string>(<unknown>element), _prepare(info, rows));
+export default (element: Element, options: RenderOptions) =>
+  _render(<string>(<unknown>element), _prepare(options.info, options.rows), {
+    canvasWidth: element.clientWidth,
+    ...options
+  });
