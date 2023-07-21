@@ -23,8 +23,11 @@ const App = (
           <Filter info={info} rows={rows}>
             {({ filtered }) => (
               <div>
+                <h2>Weight</h2>
                 <Chart renderer={e => weight(e, info, filtered)} />
-                <Chart renderer={e => sleep(e, { info, rows: filtered })} />
+                <h2>Sleep duration</h2>
+                <Chart renderer={e => sleep(e, { info, rows: filtered, renderBlocks: true, renderCounts: false, renderSums: false })} />
+                <h2>Feeding</h2>
                 <Chart renderer={e => feed(e, { info, rows: filtered })} />
               </div>
             )}

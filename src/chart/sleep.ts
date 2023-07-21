@@ -146,7 +146,7 @@ const _render = (
   const dateNumberDomain = [dnMin || 0, dnMax || 0];
   const hourOfDayDomain = [0, 23];
 
-  const margin = { top: 20, right: 20, bottom: 70, left: 40 };
+  const margin = { top: 20, right: 20, bottom: 70, left: 50 };
   const canvasWidth = options.canvasWidth || window.innerWidth;
   const width = canvasWidth - margin.left - margin.right;
   const blockWidth = width / (dateNumberDomain[1] - dateNumberDomain[0]) - 1;
@@ -213,7 +213,18 @@ const _render = (
     _blocks
       .append("g")
       .attr("class", "y axis")
-      .call(d3.axisLeft(_y));
+      .call(
+        d3.axisLeft(_y).tickFormat(d => {
+          const hourOfDay = typeof d === "number" ? d : d.valueOf();
+          if (hourOfDay === 0) {
+            return "midnight";
+          } else if (hourOfDay < 12) {
+            return `${d}am`;
+          } else {
+            return `${hourOfDay - 12}pm`;
+          }
+        })
+      );
 
     _blocks
       .selectAll("block")

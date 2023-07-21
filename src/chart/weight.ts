@@ -72,7 +72,7 @@ const _render = (selector: string, data: PreparedData) => {
   svg
     .append("g")
     .attr("class", "y axis")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y).tickFormat(d => `${d}kg`));
 
   svg
     .append("path")
