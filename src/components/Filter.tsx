@@ -59,7 +59,9 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
   filter(f: Filters = {}) {
     const { state: s } = this;
     const rangeFrom = f.rangeFrom || s.rangeFrom || s.rangeMin;
-    const rangeTo = f.rangeTo || s.rangeTo || s.rangeMax;
+    const rangeTo0 = f.rangeTo || s.rangeTo;
+    const defaultRange = (window.innerWidth < 500) ? (30 * A_DAY) : undefined;
+    const rangeTo = typeof rangeTo0 === 'number' ? rangeTo0 : (typeof defaultRange === 'number' ? (rangeFrom + defaultRange) : s.rangeMax);
     const filtered: Row[] = [];
     const { rows } = this.props;
 
