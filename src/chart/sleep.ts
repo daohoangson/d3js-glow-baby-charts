@@ -217,9 +217,11 @@ const _render = (
         d3.axisLeft(_y).tickFormat(d => {
           const hourOfDay = typeof d === "number" ? d : d.valueOf();
           if (hourOfDay === 0) {
-            return "midnight";
+            return "🌑";
           } else if (hourOfDay < 12) {
             return `${d}am`;
+          } else if (hourOfDay === 12) {
+            return "☀️";
           } else {
             return `${hourOfDay - 12}pm`;
           }
