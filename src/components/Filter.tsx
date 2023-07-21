@@ -148,6 +148,16 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
               >
                 The first 6 months
               </DropdownItem>
+              <DropdownItem
+                onClick={() =>
+                  this.filter({
+                    rangeFrom: rangeMin,
+                    rangeTo: rangeMax
+                  })
+                }
+              >
+                All data
+              </DropdownItem>
             </Dropdown>
           </Col>
         </ContainerRow>
