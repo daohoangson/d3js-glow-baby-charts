@@ -105,7 +105,7 @@ export default (data: Buffer) => {
   while (feedStmt.step()) {
     // @ts-ignore
     const feedRow: RowBabyFeedData = feedStmt.getAsObject();
-    _processRow(info, { key: "feed", ...feedRow }, tmp);
+    _processRow(info, { ...feedRow, key: "feed", }, tmp);
 
     if (feedCounter % 100 === 0) process.stdout.write(".");
     feedCounter++;
