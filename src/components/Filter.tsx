@@ -8,7 +8,7 @@ import {
 import * as React from "react";
 
 import { Info, Row } from "../util/data";
-import tz from "../util/tz";
+import tz, { A_DAY } from "../util/tz";
 
 interface ChildrenParam {
   filtered: Row[];
@@ -95,7 +95,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
   render() {
     const { info } = this.props;
     const { filtered, rangeFrom, rangeMax, rangeMin, rangeTo } = this.state;
-    const { format, formatDate } = tz(info);
+    const { format } = tz(info);
 
     return (
       <div>
@@ -122,38 +122,31 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
                 onClick={() =>
                   this.filter({
                     rangeFrom: rangeMin,
-                    rangeTo: rangeMin + 30 * 86400000
+                    rangeTo: rangeMin + 30 * A_DAY
                   })
                 }
               >
-                The first 30 days
+                The first month
               </DropdownItem>
               <DropdownItem
                 onClick={() =>
                   this.filter({
-                    rangeFrom: rangeMax - 30 * 86400000,
-                    rangeTo: rangeMax
+                    rangeFrom: rangeMin,
+                    rangeTo: rangeMin + 90 * A_DAY
                   })
                 }
               >
-                Last 30 days
+                The first 3 months
               </DropdownItem>
               <DropdownItem
                 onClick={() =>
                   this.filter({
-                    rangeFrom: rangeMax - 90 * 86400000,
-                    rangeTo: rangeMax
+                    rangeFrom: rangeMin,
+                    rangeTo: rangeMin + 180 * A_DAY
                   })
                 }
               >
-                Last 90 days
-              </DropdownItem>
-              <DropdownItem
-                onClick={() =>
-                  this.filter({ rangeFrom: rangeMin, rangeTo: rangeMax })
-                }
-              >
-                {`${formatDate(rangeMin)}-${formatDate(rangeMax)}`}
+                The first 6 months
               </DropdownItem>
             </Dropdown>
           </Col>

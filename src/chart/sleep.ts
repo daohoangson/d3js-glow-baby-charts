@@ -1,10 +1,8 @@
 import * as d3 from "d3";
 
 import { Info, Row } from "../util/data";
-import tz from "../util/tz";
+import tz, { AN_HOUR, A_DAY } from "../util/tz";
 
-const AN_HOUR = 3600000;
-const A_DAY = 86400000;
 const format2Decimal = d3.format(".2f");
 
 interface BlockDatum {
@@ -77,8 +75,9 @@ const _prepare = (info: Info, rows: Row[]) => {
     const t2 = r.t2 || r.t1;
     if (t2 > nextZeroAtTz) {
       // split into two pieces
-      if (r.t1 < nextZeroAtTz)
+      if (r.t1 < nextZeroAtTz) {
         newBlockData.push(__buildBlockData(r.t1, nextZeroAtTz, r));
+      }
       newBlockData.push(__buildBlockData(nextZeroAtTz, t2, r));
     } else {
       newBlockData.push(__buildBlockData(r.t1, t2, r));

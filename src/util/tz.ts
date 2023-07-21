@@ -1,5 +1,8 @@
 import { utcFormat } from "d3";
 
+export const AN_HOUR = 3600000;
+export const A_DAY = 86400000;
+
 type Formatter = (date: Date) => string;
 
 interface Formatters {
