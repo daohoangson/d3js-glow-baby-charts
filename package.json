@@ -4,6 +4,7 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-typescript": "^11.1.2",
     "@types/busboy": "^1.5.0",
     "@types/d3": "^7.4.0",
     "@types/muicss": "^0.9.1",
@@ -19,14 +20,13 @@
     "rollup": "^3.26.3",
     "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-node-resolve": "^4.0.1",
-    "rollup-plugin-typescript": "^1.0.0",
     "rollup-plugin-visualizer": "^5.9.2",
     "serve": "^14.2.0",
     "sql.js": "^0.5.0",
     "timezone-support": "^1.8.1",
-    "ts-node": "^8.0.3",
-    "tslib": "^1.9.3",
-    "typescript": "^3.3.4000"
+    "ts-node": "^10.9.1",
+    "tslib": "^2.6.1",
+    "typescript": "^5.1.6"
   },
   "dependencies": {
     "d3": "^7.8.5",
@@ -39,6 +39,8 @@
     "dev": "npm-run-all --parallel start watch",
     "format": "prettier --write .",
     "start": "serve -n public",
+    "tool:generate-merged-json": "ts-node ./tool/generate-merged-json.ts",
+    "tool:generate-now-json": "ts-node ./tool/generate-now-json.ts",
     "watch": "rollup -c -w"
   }
 }

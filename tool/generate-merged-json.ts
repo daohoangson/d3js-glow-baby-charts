@@ -1,5 +1,3 @@
-#!/usr/local/bin/npx ts-node
-
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join, normalize } from "path";
 

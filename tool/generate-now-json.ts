@@ -1,5 +1,3 @@
-#!/usr/local/bin/npx ts-node
-
 const nowProd = require("../now-prod.json");
 const { env: envProd } = nowProd;
 
