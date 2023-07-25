@@ -17,8 +17,8 @@ export function parseRequest(req: IncomingMessage): Promise<Array<Info | Row>> {
       }
 
       const chunks: Uint8Array[] = [];
-      file.on("data", chunk => chunks.push(chunk));
-      file.once("error", e => (error = e));
+      file.on("data", (chunk) => chunks.push(chunk));
+      file.once("error", (e) => (error = e));
       file.once("end", () => (error ? null : (buffer = Buffer.concat(chunks))));
     });
 

@@ -27,14 +27,14 @@ const _prepare = (info: Info, rows: Row[]) => {
   const { tzOffset } = info;
   const feedData: Record<string, FeedDatum> = {};
 
-  rows.forEach(r => {
+  rows.forEach((r) => {
     if (r.key !== "feed") return;
     const f = r as RowBabyFeedData;
     const _t1InTz = r.t1 - tzOffset;
     const dateNumber = Math.ceil(_t1InTz / A_DAY);
     const {
       breast_left_time: breastLeftTime,
-      breast_right_time: breastRightTime
+      breast_right_time: breastRightTime,
     } = f;
     const breastLeftCount = breastLeftTime > 0 ? 1 : 0;
     const breastRightCount = breastRightTime > 0 ? 1 : 0;
@@ -44,7 +44,7 @@ const _prepare = (info: Info, rows: Row[]) => {
         breastLeftCount,
         breastLeftTimeSum: breastLeftTime,
         breastRightCount,
-        breastRightTimeSum: breastRightTime
+        breastRightTimeSum: breastRightTime,
       };
     } else {
       feedData[dateNumber].breastLeftCount += breastLeftCount;
@@ -54,13 +54,13 @@ const _prepare = (info: Info, rows: Row[]) => {
     }
   });
 
-  return { info, feedData: Object.keys(feedData).map(dn => feedData[dn]) };
+  return { info, feedData: Object.keys(feedData).map((dn) => feedData[dn]) };
 };
 
 const _render = (
   selector: string,
   prepared: PreparedData,
-  options: RenderOptions
+  options: RenderOptions,
 ) => {
   const { info, feedData } = prepared;
   const { tzOffset } = info;
@@ -76,10 +76,10 @@ const _render = (
 
   const stackColors = {
     breastLeftTimeSum: "#8624f5",
-    breastRightTimeSum: "#1fc3aa"
+    breastRightTimeSum: "#1fc3aa",
   };
   const stackedFeedData = d3
-    .stack<FeedDatum, keyof (typeof stackColors)>()
+    .stack<FeedDatum, keyof typeof stackColors>()
     .keys(["breastLeftTimeSum", "breastRightTimeSum"])(feedData);
 
   const margin = { top: 20, right: 20, bottom: 70, left: 40 };
@@ -101,12 +101,9 @@ const _render = (
       .style("left", e.pageX + "px")
       .style("top", e.pageY - 28 + "px");
   const tooltipHide = () =>
-    tooltip
-      .transition()
-      .duration(500)
-      .style("opacity", 0);
+    tooltip.transition().duration(500).style("opacity", 0);
 
-  const [xMin, xMax] = d3.extent(feedData, d => d.date);
+  const [xMin, xMax] = d3.extent(feedData, (d) => d.date);
   const blockWidth = width / ((xMax! - xMin!) / A_DAY) - 1;
   const x = d3
     .scaleTime()
@@ -118,7 +115,7 @@ const _render = (
     .range([height, 0])
     .domain([
       0,
-      d3.max(feedData, d => d.breastLeftTimeSum + d.breastRightTimeSum) || 0
+      d3.max(feedData, (d) => d.breastLeftTimeSum + d.breastRightTimeSum) || 0,
     ]);
 
   const svg = d3
@@ -139,10 +136,10 @@ const _render = (
     .append("g")
     .attr("class", "y axis")
     .call(
-      d3.axisLeft(y).tickFormat(d => {
+      d3.axisLeft(y).tickFormat((d) => {
         const seconds = typeof d === "number" ? d : d.valueOf();
         return __formatSeconds(seconds);
-      })
+      }),
     );
 
   svg
@@ -151,16 +148,16 @@ const _render = (
     .data(stackedFeedData)
     .enter()
     .append("g")
-    .attr("fill", d => stackColors[d.key])
+    .attr("fill", (d) => stackColors[d.key])
     .selectAll("rect")
     // enter a second time = loop subgroup per subgroup to add all rectangles
-    .data(d => d)
+    .data((d) => d)
     .enter()
     .append("rect")
-    .attr("x", d => x(d.data.date))
-    .attr("y", d => y(d[1]))
+    .attr("x", (d) => x(d.data.date))
+    .attr("y", (d) => y(d[1]))
     .attr("width", blockWidth)
-    .attr("height", d => y(d[0]) - y(d[1]))
+    .attr("height", (d) => y(d[0]) - y(d[1]))
     .on("mouseover", (e: MouseEvent, d) => {
       const feedDatum = d.data;
       tooltipShow(
@@ -168,14 +165,14 @@ const _render = (
         `${formatDate(feedDatum.date)}<br />` +
           (feedDatum.breastLeftCount > 0
             ? `Left: x${feedDatum.breastLeftCount} ${__formatSeconds(
-                feedDatum.breastLeftTimeSum
+                feedDatum.breastLeftTimeSum,
               )}<br />`
             : "") +
           (feedDatum.breastRightCount > 0
             ? `Right: x${feedDatum.breastRightCount} ${__formatSeconds(
-                feedDatum.breastRightTimeSum
+                feedDatum.breastRightTimeSum,
               )}<br />`
-            : "")
+            : ""),
       );
     })
     .on("mouseout", () => tooltipHide());
@@ -184,5 +181,5 @@ const _render = (
 export default (element: Element, options: RenderOptions) =>
   _render(<string>(<unknown>element), _prepare(options.info, options.rows), {
     canvasWidth: element.clientWidth,
-    ...options
+    ...options,
   });

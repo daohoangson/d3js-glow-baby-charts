@@ -3,7 +3,7 @@ import {
   Input,
   Row as ContainerRow,
   Dropdown,
-  DropdownItem
+  DropdownItem,
 } from "muicss/react";
 import * as React from "react";
 
@@ -40,7 +40,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
     const { rows } = props;
     let rangeMin = Date.now();
     let rangeMax = 0;
-    rows.forEach(r => {
+    rows.forEach((r) => {
       if (!r.t1) return;
       rangeMin = Math.min(rangeMin, r.t1);
       rangeMax = Math.max(rangeMax, r.t1);
@@ -48,7 +48,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
 
     this.state = {
       rangeMax,
-      rangeMin
+      rangeMin,
     };
   }
 
@@ -60,12 +60,17 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
     const { state: s } = this;
     const rangeFrom = f.rangeFrom || s.rangeFrom || s.rangeMin;
     const rangeTo0 = f.rangeTo || s.rangeTo;
-    const defaultRange = (window.innerWidth < 500) ? (30 * A_DAY) : undefined;
-    const rangeTo = typeof rangeTo0 === 'number' ? rangeTo0 : (typeof defaultRange === 'number' ? (rangeFrom + defaultRange) : s.rangeMax);
+    const defaultRange = window.innerWidth < 500 ? 30 * A_DAY : undefined;
+    const rangeTo =
+      typeof rangeTo0 === "number"
+        ? rangeTo0
+        : typeof defaultRange === "number"
+        ? rangeFrom + defaultRange
+        : s.rangeMax;
     const filtered: Row[] = [];
     const { rows } = this.props;
 
-    rows.forEach(r => {
+    rows.forEach((r) => {
       if (r.t1 < rangeFrom) return;
       if (r.t1 > rangeTo) return;
       filtered.push(r);
@@ -74,7 +79,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
     this.setState(() => ({
       filtered,
       rangeFrom,
-      rangeTo
+      rangeTo,
     }));
   }
 
@@ -106,7 +111,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
             <Input
               label="From"
               type="date"
-              onChange={e => this.onRangeFromChange(e)}
+              onChange={(e) => this.onRangeFromChange(e)}
               value={format(rangeFrom || rangeMin, "%Y-%m-%d")}
             />
           </Col>
@@ -114,7 +119,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
             <Input
               label="To"
               type="date"
-              onChange={e => this.onRangeToChange(e)}
+              onChange={(e) => this.onRangeToChange(e)}
               value={format(rangeTo || rangeMax, "%Y-%m-%d")}
             />
           </Col>
@@ -124,7 +129,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
                 onClick={() =>
                   this.filter({
                     rangeFrom: rangeMin,
-                    rangeTo: rangeMin + 30 * A_DAY
+                    rangeTo: rangeMin + 30 * A_DAY,
                   })
                 }
               >
@@ -134,7 +139,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
                 onClick={() =>
                   this.filter({
                     rangeFrom: rangeMin,
-                    rangeTo: rangeMin + 90 * A_DAY
+                    rangeTo: rangeMin + 90 * A_DAY,
                   })
                 }
               >
@@ -144,7 +149,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
                 onClick={() =>
                   this.filter({
                     rangeFrom: rangeMin,
-                    rangeTo: rangeMin + 180 * A_DAY
+                    rangeTo: rangeMin + 180 * A_DAY,
                   })
                 }
               >
@@ -154,7 +159,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
                 onClick={() =>
                   this.filter({
                     rangeFrom: rangeMin,
-                    rangeTo: rangeMax
+                    rangeTo: rangeMax,
                   })
                 }
               >
@@ -166,7 +171,7 @@ export default class Filter extends React.Component<FilterProps, FilterState> {
         {this.props.children({
           filtered: filtered || [],
           rangeFrom: rangeFrom || rangeMin,
-          rangeTo: rangeTo || rangeMax
+          rangeTo: rangeTo || rangeMax,
         })}
       </div>
     );

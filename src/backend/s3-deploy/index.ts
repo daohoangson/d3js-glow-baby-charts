@@ -12,8 +12,8 @@ export default (req: IncomingMessage, res: ServerResponse) => {
 
   parseRequest(req)
     .then(uploadToS3)
-    .then(Location => res.writeHead(301, { Location }))
-    .catch(err => {
+    .then((Location) => res.writeHead(301, { Location }))
+    .catch((err) => {
       if (typeof err === "number") {
         res.writeHead(err);
       } else {

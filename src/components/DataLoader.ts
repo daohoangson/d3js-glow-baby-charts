@@ -31,7 +31,7 @@ export default class DataLoader extends React.Component<
       return;
     }
 
-    json<Row[]>("merged.json").then(rows => {
+    json<Row[]>("merged.json").then((rows) => {
       const info = <Info>(<unknown>rows[0]);
       if (info.key !== "info") {
         throw new Error("rows[0] is not of type info");

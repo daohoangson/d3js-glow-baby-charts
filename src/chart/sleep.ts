@@ -61,11 +61,11 @@ const _prepare = (info: Info, rows: Row[]) => {
       hours: (t2 - t1) / AN_HOUR,
       t1,
       t2,
-      row
+      row,
     };
   };
 
-  rows.forEach(r => {
+  rows.forEach((r) => {
     if (r.key !== "sleep") return;
 
     const zeroAtTz = Math.ceil(r.t1 / A_DAY) * A_DAY + tzOffset;
@@ -83,7 +83,7 @@ const _prepare = (info: Info, rows: Row[]) => {
       newBlockData.push(__buildBlockData(r.t1, t2, r));
     }
 
-    newBlockData.forEach(d => {
+    newBlockData.forEach((d) => {
       blockData.push(d);
 
       const { dateNumber, hours } = d;
@@ -100,18 +100,18 @@ const _prepare = (info: Info, rows: Row[]) => {
   });
 
   const countData: CountDatum[] = [];
-  Object.keys(counts).forEach(dn => {
+  Object.keys(counts).forEach((dn) => {
     countData.push({
       dateNumber: parseInt(dn),
-      count: counts[dn]
+      count: counts[dn],
     });
   });
 
   const sumData: SumDatum[] = [];
-  Object.keys(sums).forEach(dn => {
+  Object.keys(sums).forEach((dn) => {
     sumData.push({
       dateNumber: parseInt(dn),
-      sum: sums[dn]
+      sum: sums[dn],
     });
   });
 
@@ -121,7 +121,7 @@ const _prepare = (info: Info, rows: Row[]) => {
 const _render = (
   selector: string,
   prepared: PreparedData,
-  options: RenderOptions
+  options: RenderOptions,
 ) => {
   const { blockData, countData, info, sumData } = prepared;
   const { birthday, tzOffset } = info;
@@ -153,10 +153,7 @@ const _render = (
   const height = 300 - margin.top - margin.bottom;
   const blockHeight = height / 24;
 
-  const x = d3
-    .scaleLinear()
-    .range([0, width])
-    .domain(dateNumberDomain);
+  const x = d3.scaleLinear().range([0, width]).domain(dateNumberDomain);
   const xValue = (d: BlockDatum | CountDatum | SumDatum) => x(d.dateNumber);
   const newChart = () => {
     const svg = d3
@@ -176,9 +173,9 @@ const _render = (
           .axisBottom<number>(x)
           .tickFormat(
             (dn: number) =>
-              `${Math.floor((dn - (birthday - tzOffset) / A_DAY) / 30)}mo`
+              `${Math.floor((dn - (birthday - tzOffset) / A_DAY) / 30)}mo`,
           )
-          .tickValues(__buildXTickValues(dateNumberDomain))
+          .tickValues(__buildXTickValues(dateNumberDomain)),
       );
 
     return svg;
@@ -198,23 +195,17 @@ const _render = (
       .style("left", e.pageX + "px")
       .style("top", e.pageY - 28 + "px");
   const tooltipHide = () =>
-    tooltip
-      .transition()
-      .duration(500)
-      .style("opacity", 0);
+    tooltip.transition().duration(500).style("opacity", 0);
 
   const __renderBlocks = () => {
     const _blocks = newChart();
 
-    const _y = d3
-      .scaleLinear()
-      .range([0, height])
-      .domain(hourOfDayDomain);
+    const _y = d3.scaleLinear().range([0, height]).domain(hourOfDayDomain);
     _blocks
       .append("g")
       .attr("class", "y axis")
       .call(
-        d3.axisLeft(_y).tickFormat(d => {
+        d3.axisLeft(_y).tickFormat((d) => {
           const hourOfDay = typeof d === "number" ? d : d.valueOf();
           if (hourOfDay === 0) {
             return "🌑";
@@ -225,7 +216,7 @@ const _render = (
           } else {
             return `${hourOfDay - 12}pm`;
           }
-        })
+        }),
       );
 
     _blocks
@@ -234,16 +225,16 @@ const _render = (
       .enter()
       .append("rect")
       .attr("x", xValue)
-      .attr("y", d => _y(d.hourOfDay))
+      .attr("y", (d) => _y(d.hourOfDay))
       .attr("width", blockWidth)
-      .attr("height", d => blockHeight * d.hours)
+      .attr("height", (d) => blockHeight * d.hours)
       .on("mouseover", (e: MouseEvent, d) => {
         const r = d.row;
         const t2 = r.t2 || r.t1;
         tooltipShow(
           e,
           `${formatTime(r.t1)} -> ${formatTime(t2)}<br />` +
-            `Duration: ${format2Decimal((t2 - r.t1) / AN_HOUR)} hours`
+            `Duration: ${format2Decimal((t2 - r.t1) / AN_HOUR)} hours`,
         );
       })
       .on("mouseout", () => tooltipHide());
@@ -255,11 +246,8 @@ const _render = (
     const _y = d3
       .scaleLinear()
       .range([height, 0])
-      .domain([0, d3.max(countData, d => d.count) || 0]);
-    _counts
-      .append("g")
-      .attr("class", "y axis")
-      .call(d3.axisLeft(_y));
+      .domain([0, d3.max(countData, (d) => d.count) || 0]);
+    _counts.append("g").attr("class", "y axis").call(d3.axisLeft(_y));
 
     _counts
       .selectAll("bar")
@@ -267,11 +255,11 @@ const _render = (
       .enter()
       .append("rect")
       .attr("x", xValue)
-      .attr("y", d => _y(d.count))
+      .attr("y", (d) => _y(d.count))
       .attr("width", blockWidth)
-      .attr("height", d => height - _y(d.count))
+      .attr("height", (d) => height - _y(d.count))
       .on("mouseover", (e: MouseEvent, d) =>
-        tooltipShow(e, `${__formatDate(d.dateNumber)}<br />Sleeps: ${d.count}`)
+        tooltipShow(e, `${__formatDate(d.dateNumber)}<br />Sleeps: ${d.count}`),
       )
       .on("mouseout", () => tooltipHide());
   };
@@ -282,11 +270,8 @@ const _render = (
     const _y = d3
       .scaleLinear()
       .range([height, 0])
-      .domain([0, d3.max(sumData, d => d.sum) || 0]);
-    _counts
-      .append("g")
-      .attr("class", "y axis")
-      .call(d3.axisLeft(_y));
+      .domain([0, d3.max(sumData, (d) => d.sum) || 0]);
+    _counts.append("g").attr("class", "y axis").call(d3.axisLeft(_y));
 
     _counts
       .selectAll("bar")
@@ -294,16 +279,16 @@ const _render = (
       .enter()
       .append("rect")
       .attr("x", xValue)
-      .attr("y", d => _y(d.sum))
+      .attr("y", (d) => _y(d.sum))
       .attr("width", blockWidth)
-      .attr("height", d => height - _y(d.sum))
+      .attr("height", (d) => height - _y(d.sum))
       .on("mouseover", (e: MouseEvent, d) =>
         tooltipShow(
           e,
-          `${__formatDate(d.dateNumber)}<br />Hours: ${format2Decimal(d.sum)}`
-        )
+          `${__formatDate(d.dateNumber)}<br />Hours: ${format2Decimal(d.sum)}`,
+        ),
       )
-      .attr("height", d => height - _y(d.sum));
+      .attr("height", (d) => height - _y(d.sum));
   };
 
   const { renderBlocks, renderCounts, renderSums } = options;
@@ -321,5 +306,5 @@ const _render = (
 export default (element: Element, options: RenderOptions) =>
   _render(<string>(<unknown>element), _prepare(options.info, options.rows), {
     canvasWidth: element.clientWidth,
-    ...options
+    ...options,
   });

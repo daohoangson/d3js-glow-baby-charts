@@ -30,15 +30,15 @@ export function uploadToS3(merged: Array<Info | Row>) {
           Body,
           Bucket: <string>bucket,
           Key: `${deployId}/${fileName}`,
-          ContentType: contentType(fileName)
+          ContentType: contentType(fileName),
         },
-        e => (e ? err(e) : ok(console.log(`[${deployId}] ${fileName} OK`)))
+        (e) => (e ? err(e) : ok(console.log(`[${deployId}] ${fileName} OK`))),
       );
     });
 
   const promises = [
     __putObject("merged.json", JSON.stringify(merged)),
-    ...filesMap(({ fileName, buffer }) => __putObject(fileName, buffer))
+    ...filesMap(({ fileName, buffer }) => __putObject(fileName, buffer)),
   ];
 
   return Promise.all(promises).then(() => `${url}/${deployId}`);

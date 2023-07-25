@@ -22,7 +22,7 @@ export default class Info extends React.Component<InfoProps> {
           ""
         )}{" "}
         <span id={info.babyId.toString()}>{info.firstName}</span>{" "}
-        <span style={{ "font-size": "smaller", opacity: 0.75 }}>
+        <span style={{ fontSize: "smaller", opacity: 0.75 }}>
           {format(info.birthday, "%B %d, %Y")}
         </span>
       </h1>

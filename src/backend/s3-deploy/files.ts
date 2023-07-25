@@ -9,22 +9,22 @@ interface File {
 const contentTypes: { [ext: string]: string } = {
   ".html": "text/html",
   ".js": "text/javascript",
-  ".json": "application/json"
+  ".json": "application/json",
 };
 
 const files: File[] = [
   {
     buffer: readFileSync(
-      join(__dirname, "..", "..", "..", "public", "bundle.js")
+      join(__dirname, "..", "..", "..", "public", "bundle.js"),
     ),
-    fileName: "bundle.js"
+    fileName: "bundle.js",
   },
   {
     buffer: readFileSync(
-      join(__dirname, "..", "..", "..", "public", "index.html")
+      join(__dirname, "..", "..", "..", "public", "index.html"),
     ),
-    fileName: "index.html"
-  }
+    fileName: "index.html",
+  },
 ];
 
 export function contentType(fileName: string) {

@@ -51,6 +51,6 @@ export default (options: TzOptions) => {
     formatDate,
     formatDayOfMonth,
     formatTime,
-    parseYmd
+    parseYmd,
   };
 };

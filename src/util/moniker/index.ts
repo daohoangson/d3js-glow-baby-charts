@@ -22,7 +22,7 @@ class Dictionary {
 
   constructor(data: string) {
     this.words = [];
-    data.split(/\s+/).forEach(w => (w ? this.words.push(w) : null));
+    data.split(/\s+/).forEach((w) => (w ? this.words.push(w) : null));
   }
 
   choose() {
@@ -39,7 +39,7 @@ class Generator {
   }
 
   choose() {
-    const words = this.dicts.map(d => d.choose());
+    const words = this.dicts.map((d) => d.choose());
     return words.join("-");
   }
 

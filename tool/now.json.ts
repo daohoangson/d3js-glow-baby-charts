@@ -4,7 +4,7 @@ const nowProd = require("../now-prod.json");
 const { env: envProd } = nowProd;
 
 const env: { [key: string]: string } = {};
-Object.keys(envProd).forEach(k => {
+Object.keys(envProd).forEach((k) => {
   const v: string = envProd[k];
   if (v.startsWith("@")) {
     // `now dev` doesn't support secret

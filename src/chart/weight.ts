@@ -23,7 +23,7 @@ interface RenderOptions {
 const _prepare = (info: Info, rows: Row[]) => {
   const weightData: WeightDatum[] = [];
 
-  rows.forEach(r => {
+  rows.forEach((r) => {
     if (r.key !== "weight") return;
     weightData.push({ date: r.t1, kg: (<RowBabyLog>r).val_float });
   });
@@ -34,7 +34,7 @@ const _prepare = (info: Info, rows: Row[]) => {
 const _render = (
   selector: string,
   prepared: PreparedData,
-  options: RenderOptions
+  options: RenderOptions,
 ) => {
   const { info, weightData } = prepared;
   const { tzOffset } = info;
@@ -51,7 +51,7 @@ const _render = (
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-  const [xMin, xMax] = d3.extent(weightData, d => d.date);
+  const [xMin, xMax] = d3.extent(weightData, (d) => d.date);
   const x = d3
     .scaleTime()
     .range([0, width])
@@ -60,7 +60,7 @@ const _render = (
   const y = d3
     .scaleLinear()
     .range([height, 0])
-    .domain([0, d3.max(weightData, d => d.kg) || 0]);
+    .domain([0, d3.max(weightData, (d) => d.kg) || 0]);
 
   const svg = d3
     .select(selector)
@@ -78,13 +78,13 @@ const _render = (
       d3
         .axisBottom<Date>(x)
         .tickFormat(d3.timeFormat("%b %y"))
-        .ticks(d3.timeMonth)
+        .ticks(d3.timeMonth),
     );
 
   svg
     .append("g")
     .attr("class", "y axis")
-    .call(d3.axisLeft(y).tickFormat(d => `${d}kg`));
+    .call(d3.axisLeft(y).tickFormat((d) => `${d}kg`));
 
   svg
     .append("path")
@@ -94,8 +94,8 @@ const _render = (
       "d",
       d3
         .line<WeightDatum>()
-        .x(d => x(d.date))
-        .y(d => y(d.kg))
+        .x((d) => x(d.date))
+        .y((d) => y(d.kg)),
     );
 
   svg
@@ -104,13 +104,10 @@ const _render = (
     .enter()
     .append("circle")
     .attr("r", 3)
-    .attr("cx", d => x(d.date))
-    .attr("cy", d => y(d.kg))
+    .attr("cx", (d) => x(d.date))
+    .attr("cy", (d) => y(d.kg))
     .on("mouseover", (e: MouseEvent, d) => {
-      tooltip
-        .transition()
-        .duration(200)
-        .style("opacity", 0.9);
+      tooltip.transition().duration(200).style("opacity", 0.9);
 
       tooltip
         .html(`${formatDate(d.date)}<br/>${d.kg.toFixed(1)}kg`)
@@ -118,15 +115,12 @@ const _render = (
         .style("top", e.pageY - 28 + "px");
     })
     .on("mouseout", () => {
-      tooltip
-        .transition()
-        .duration(500)
-        .style("opacity", 0);
+      tooltip.transition().duration(500).style("opacity", 0);
     });
 };
 
 export default (element: Element, options: RenderOptions) =>
   _render(<string>(<unknown>element), _prepare(options.info, options.rows), {
     canvasWidth: element.clientWidth,
-    ...options
+    ...options,
   });

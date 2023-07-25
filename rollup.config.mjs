@@ -17,10 +17,10 @@ export default {
       d3: "d3",
       "muicss/react": "mui.react",
       react: "React",
-      "react-dom": "ReactDOM"
+      "react-dom": "ReactDOM",
     },
     name: "GlowBabyCharts",
-    sourcemap: !production
+    sourcemap: !production,
   },
   external: ["d3", "muicss/react", "react", "react-dom"],
   plugins: [
@@ -29,7 +29,7 @@ export default {
     production && terser(),
     typescript(),
     visualizer({
-      filename: `./.data/visualizer-${production ? "prod" : "dev"}.html`
-    })
-  ]
+      filename: `./.data/visualizer-${production ? "prod" : "dev"}.html`,
+    }),
+  ],
 };

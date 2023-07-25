@@ -41,7 +41,7 @@ const _getEndTimestamp = (info: Info, row: RowBabyFeedData | RowBabyLog) => {
 const _processRow = (
   info: Info,
   row: RowBabyFeedData | RowBabyLog,
-  tmp: TemporaryMap
+  tmp: TemporaryMap,
 ) => {
   const t1 = _getStartTimestamp(info, row);
   if (typeof tmp[t1] === "undefined") tmp[t1] = {};
@@ -85,7 +85,7 @@ export default (data: Buffer) => {
       firstName: first_name.toString(),
       gender: <Gender>gender.toString(),
       timeZone,
-      tzOffset
+      tzOffset,
     };
     tmp[0][0].push(infoOrNull);
 
@@ -98,14 +98,14 @@ export default (data: Buffer) => {
 
   console.log("Reading table: BabyFeedData...");
   const feedStmt = db.prepare(
-    "SELECT * FROM BabyFeedData WHERE baby_id = :babyId"
+    "SELECT * FROM BabyFeedData WHERE baby_id = :babyId",
   );
   let feedCounter = 0;
   feedStmt.bind({ ":babyId": babyId });
   while (feedStmt.step()) {
     // @ts-ignore
     const feedRow: RowBabyFeedData = feedStmt.getAsObject();
-    _processRow(info, { ...feedRow, key: "feed", }, tmp);
+    _processRow(info, { ...feedRow, key: "feed" }, tmp);
 
     if (feedCounter % 100 === 0) process.stdout.write(".");
     feedCounter++;
@@ -128,13 +128,13 @@ export default (data: Buffer) => {
 
   const merged: Array<Info | Row> = [];
   Object.keys(tmp)
-    .map(v1 => parseInt(v1))
+    .map((v1) => parseInt(v1))
     .sort()
-    .forEach(t1 =>
+    .forEach((t1) =>
       Object.keys(tmp[t1])
-        .map(v2 => parseInt(v2))
+        .map((v2) => parseInt(v2))
         .sort()
-        .forEach(t2 => tmp[t1][t2].forEach(row => merged.push(row)))
+        .forEach((t2) => tmp[t1][t2].forEach((row) => merged.push(row))),
     );
 
   return merged;
