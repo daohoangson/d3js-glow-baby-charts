@@ -3,6 +3,7 @@
   "repository": "https://github.com/daohoangson/d3js-glow-baby-charts",
   "license": "GPL-3.0-only",
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.3",
     "@types/d3": "^5.7.1",
     "@types/muicss": "^0.9.1",
     "@types/node": "^11.11.4",
@@ -14,12 +15,11 @@
     "date-fns-timezone": "^0.1.4",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.16.4",
-    "rollup": "^1.5.0",
+    "rollup": "^3.26.3",
     "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-node-resolve": "^4.0.1",
-    "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-typescript": "^1.0.0",
-    "rollup-plugin-visualizer": "^1.1.0",
+    "rollup-plugin-visualizer": "^5.9.2",
     "serve": "^10.1.2",
     "sql.js": "^0.5.0",
     "timezone-support": "^1.8.1",
@@ -37,7 +37,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "npm-run-all --parallel start watch",
-    "lint": "prettier --check public/*.html src/**/*.ts tool/*.ts *.js *.json",
+    "format": "prettier --write public/*.html src/**/*.ts tool/*.ts *.js *.json",
+    "lint": "tslint",
     "start": "serve -n public",
     "watch": "rollup -c -w"
   }
