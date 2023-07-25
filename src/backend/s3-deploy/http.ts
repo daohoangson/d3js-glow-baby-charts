@@ -1,4 +1,4 @@
-import * as Busboy from "busboy";
+import * as newBusboy from "busboy";
 import { IncomingMessage } from "http";
 import { Readable } from "stream";
 
@@ -9,7 +9,7 @@ export function parseRequest(req: IncomingMessage): Promise<Array<Info | Row>> {
   return new Promise((resolve, reject) => {
     let buffer: Buffer | null = null;
     let error: Error | null = null;
-    const busboy = new Busboy({ headers: req.headers });
+    const busboy = newBusboy({ headers: req.headers });
 
     busboy.on("file", (fieldName: string, file: Readable) => {
       if (fieldName !== "db") {
@@ -22,7 +22,7 @@ export function parseRequest(req: IncomingMessage): Promise<Array<Info | Row>> {
       file.once("end", () => (error ? null : (buffer = Buffer.concat(chunks))));
     });
 
-    busboy.on("finish", () => {
+    busboy.on("close", () => {
       if (!buffer) return reject(400);
       if (error) return reject(error);
 

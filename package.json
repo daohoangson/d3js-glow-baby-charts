@@ -4,6 +4,7 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.3",
+    "@types/busboy": "^1.5.0",
     "@types/d3": "^5.7.1",
     "@types/muicss": "^0.9.1",
     "@types/node": "^11.11.4",
@@ -11,7 +12,7 @@
     "@types/react-dom": "^16.8.3",
     "@types/sql.js": "0.0.29",
     "aws-sdk": "^2.425.0",
-    "busboy": "^0.3.0",
+    "busboy": "^1.6.0",
     "date-fns-timezone": "^0.1.4",
     "npm-run-all2": "^6.0.6",
     "prettier": "^1.16.4",
