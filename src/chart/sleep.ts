@@ -189,14 +189,14 @@ const _render = (
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
-  const tooltipShow = (html: string) =>
+  const tooltipShow = (e: MouseEvent, html: string) =>
     tooltip
       .html(html)
       .transition()
       .duration(200)
       .style("opacity", 0.9)
-      .style("left", d3.event.pageX + "px")
-      .style("top", d3.event.pageY - 28 + "px");
+      .style("left", e.pageX + "px")
+      .style("top", e.pageY - 28 + "px");
   const tooltipHide = () =>
     tooltip
       .transition()
@@ -237,10 +237,11 @@ const _render = (
       .attr("y", d => _y(d.hourOfDay))
       .attr("width", blockWidth)
       .attr("height", d => blockHeight * d.hours)
-      .on("mouseover", d => {
+      .on("mouseover", (e: MouseEvent, d) => {
         const r = d.row;
         const t2 = r.t2 || r.t1;
         tooltipShow(
+          e,
           `${formatTime(r.t1)} -> ${formatTime(t2)}<br />` +
             `Duration: ${format2Decimal((t2 - r.t1) / AN_HOUR)} hours`
         );
@@ -269,8 +270,8 @@ const _render = (
       .attr("y", d => _y(d.count))
       .attr("width", blockWidth)
       .attr("height", d => height - _y(d.count))
-      .on("mouseover", d =>
-        tooltipShow(`${__formatDate(d.dateNumber)}<br />Sleeps: ${d.count}`)
+      .on("mouseover", (e: MouseEvent, d) =>
+        tooltipShow(e, `${__formatDate(d.dateNumber)}<br />Sleeps: ${d.count}`)
       )
       .on("mouseout", () => tooltipHide());
   };
@@ -296,8 +297,9 @@ const _render = (
       .attr("y", d => _y(d.sum))
       .attr("width", blockWidth)
       .attr("height", d => height - _y(d.sum))
-      .on("mouseover", d =>
+      .on("mouseover", (e: MouseEvent, d) =>
         tooltipShow(
+          e,
           `${__formatDate(d.dateNumber)}<br />Hours: ${format2Decimal(d.sum)}`
         )
       )

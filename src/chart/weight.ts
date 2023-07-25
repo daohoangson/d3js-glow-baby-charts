@@ -106,7 +106,7 @@ const _render = (
     .attr("r", 3)
     .attr("cx", d => x(d.date))
     .attr("cy", d => y(d.kg))
-    .on("mouseover", d => {
+    .on("mouseover", (e: MouseEvent, d) => {
       tooltip
         .transition()
         .duration(200)
@@ -114,8 +114,8 @@ const _render = (
 
       tooltip
         .html(`${formatDate(d.date)}<br/>${d.kg.toFixed(1)}kg`)
-        .style("left", d3.event.pageX + "px")
-        .style("top", d3.event.pageY - 28 + "px");
+        .style("left", e.pageX + "px")
+        .style("top", e.pageY - 28 + "px");
     })
     .on("mouseout", () => {
       tooltip

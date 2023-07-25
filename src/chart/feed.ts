@@ -92,14 +92,14 @@ const _render = (
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
-  const tooltipShow = (html: string) =>
+  const tooltipShow = (e: MouseEvent, html: string) =>
     tooltip
       .html(html)
       .transition()
       .duration(200)
       .style("opacity", 0.9)
-      .style("left", d3.event.pageX + "px")
-      .style("top", d3.event.pageY - 28 + "px");
+      .style("left", e.pageX + "px")
+      .style("top", e.pageY - 28 + "px");
   const tooltipHide = () =>
     tooltip
       .transition()
@@ -161,9 +161,10 @@ const _render = (
     .attr("y", d => y(d[1]))
     .attr("width", blockWidth)
     .attr("height", d => y(d[0]) - y(d[1]))
-    .on("mouseover", d => {
+    .on("mouseover", (e: MouseEvent, d) => {
       const feedDatum = d.data;
       tooltipShow(
+        e,
         `${formatDate(feedDatum.date)}<br />` +
           (feedDatum.breastLeftCount > 0
             ? `Left: x${feedDatum.breastLeftCount} ${__formatSeconds(
