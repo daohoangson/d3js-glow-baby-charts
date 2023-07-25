@@ -13,19 +13,18 @@
     "aws-sdk": "^2.425.0",
     "busboy": "^0.3.0",
     "date-fns-timezone": "^0.1.4",
-    "npm-run-all": "^4.1.5",
+    "npm-run-all2": "^6.0.6",
     "prettier": "^1.16.4",
     "rollup": "^3.26.3",
     "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-node-resolve": "^4.0.1",
     "rollup-plugin-typescript": "^1.0.0",
     "rollup-plugin-visualizer": "^5.9.2",
-    "serve": "^10.1.2",
+    "serve": "^14.2.0",
     "sql.js": "^0.5.0",
     "timezone-support": "^1.8.1",
     "ts-node": "^8.0.3",
     "tslib": "^1.9.3",
-    "tslint": "^5.14.0",
     "typescript": "^3.3.4000"
   },
   "dependencies": {
@@ -38,7 +37,6 @@
     "build": "rollup -c",
     "dev": "npm-run-all --parallel start watch",
     "format": "prettier --write public/*.html src/**/*.ts tool/*.ts *.js *.json",
-    "lint": "tslint",
     "start": "serve -n public",
     "watch": "rollup -c -w"
   }
