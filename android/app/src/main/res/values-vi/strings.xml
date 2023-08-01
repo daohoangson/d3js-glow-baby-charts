@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Glow Baby Charts</string>
+    <string name="db_file_size_x">Kích thước: %d bytes</string>
+    <string name="open_verb">Mở xem ngay</string>
+    <string name="share_verb">Gửi link</string>
+    <string name="upload_verb">Tải lên</string>
+    <string name="uploaded">Tải lên thành công</string>
+    <string name="uploading">Đang tải lên…</string>
+</resources>
